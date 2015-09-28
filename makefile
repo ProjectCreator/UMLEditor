@@ -2,7 +2,8 @@ PROJECT_NAME = UMLEditor
 
 DIR = ./js
 COFFEE_FILES = $(DIR)/namespaces.coffee \
-			   $(DIR)/ShapeFactory.coffee $(DIR)/LinkFactory.coffee 
+			   $(DIR)/View.coffee $(DIR)/UMLClass.coffee \
+			   $(DIR)/ShapeFactory.coffee $(DIR)/LinkFactory.coffee
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 
