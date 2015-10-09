@@ -1,13 +1,13 @@
 uml = joint.shapes.uml
 
 
-stringifyVisibility = (visibilty = "public") ->
+stringifyVisibility = (visibility = "public") ->
     mapper =
         public:     "+"
         protected:  "#"
         package:    "~"
         private:    "-"
-    return mapper[visibilty.toLowerCase()]
+    return mapper[visibility.toLowerCase()]
 
 stringifyParameters = (parameters) ->
     if not parameters or parameters.length is 0
@@ -16,14 +16,14 @@ stringifyParameters = (parameters) ->
 
 
 stringifyAttribute = (attribute) ->
-    return "#{stringifyVisibility(attribute.visibilty)} #{attribute.name}: #{attribute.type}".trim()
+    return "#{stringifyVisibility(attribute.visibility)} #{attribute.name}: #{attribute.type}".trim()
 
 stringifyMethod = (method) ->
     if method.type?
         suffix = ": #{method.type}"
     else
         suffix = ""
-    return "#{stringifyVisibility(method.visibilty)} #{method.name}(#{stringifyParameters(method.parameters)})#{suffix}".trim()
+    return "#{stringifyVisibility(method.visibility)} #{method.name}(#{stringifyParameters(method.parameters)})#{suffix}".trim()
 
 calculateHeight = (name, attributes, methods) ->
     return (attributes.length + methods.length) * 14 + 35

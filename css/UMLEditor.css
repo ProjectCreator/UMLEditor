@@ -1,0 +1,15 @@
+.uml .class .part {
+  stroke: black;
+  stroke-width: 2;
+  fill: white; }
+.uml .class .name {
+  cursor: move; }
+
+.text {
+  stroke-width: 0;
+  font-size: 14px;
+  font-family: Arial;
+  fill: black;
+  line-height: 16px; }
+
+/*# sourceMappingURL=UMLEditor.css.map */

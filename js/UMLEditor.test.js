@@ -2,7 +2,29 @@
 (function() {
   $(document).ready(function() {
     var uml;
-    uml = new App.UMLClass("my class");
+    uml = new App.UMLClass("my class", [
+      {
+        name: "prop1",
+        type: "String",
+        visibility: "public"
+      }, "prop2"
+    ], [
+      "method1", {
+        name: "method2",
+        type: "String",
+        visibility: "public",
+        parameters: [
+          {
+            name: "a",
+            type: "Integer"
+          }
+        ]
+      }, {
+        name: "method3",
+        type: "String",
+        visibility: "public"
+      }
+    ]);
     console.log(uml);
     return true;
   });

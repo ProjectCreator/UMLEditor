@@ -2,15 +2,20 @@ PROJECT_NAME = UMLEditor
 
 DIR = ./js
 COFFEE_FILES = $(DIR)/namespaces.coffee \
-			   $(DIR)/View.coffee $(DIR)/UMLClass.coffee \
-			   $(DIR)/ShapeFactory.coffee $(DIR)/LinkFactory.coffee
+			   $(DIR)/AbstractView.coffee \
+			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
+			#    $(DIR)/ShapeFactory.coffee $(DIR)/LinkFactory.coffee
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 
+CSS_FILES = css/uml.sass
 
 make:
 	# compile coffee
 	cat $(DEBUG_FILE) $(COFFEE_FILES) | coffee --compile --stdio > $(DIR)/$(PROJECT_NAME).js
+	# compile sass
+	cat $(CSS_FILES) > css/$(PROJECT_NAME).sass
+	sass css/$(PROJECT_NAME).sass css/$(PROJECT_NAME).css
 
 test: make
 	cat $(TEST_FILES) | coffee --compile --stdio > $(DIR)/$(PROJECT_NAME).test.js
@@ -24,3 +29,7 @@ clean:
 	rm -f $(DIR)/$(PROJECT_NAME).js
 	rm -f $(DIR)/$(PROJECT_NAME).test.js
 	rm -f $(DIR)/$(PROJECT_NAME).min.js
+	# css
+	rm -f css/UMLEditor.sass
+	rm -f css/UMLEditor.css
+	rm -f css/UMLEditor.css.map
