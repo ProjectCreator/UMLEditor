@@ -6,10 +6,17 @@
       {
         name: "prop1",
         type: "String",
-        visibility: "public"
-      }, "prop2"
+        visibility: "private",
+        "default": "hello world"
+      }, {
+        name: "prop2",
+        type: "String"
+      }
     ], [
-      "method1", {
+      {
+        name: "method1",
+        type: "Int"
+      }, {
         name: "method2",
         type: "String",
         visibility: "public",

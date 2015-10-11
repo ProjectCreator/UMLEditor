@@ -2,13 +2,13 @@ PROJECT_NAME = UMLEditor
 
 DIR = ./js
 COFFEE_FILES = $(DIR)/namespaces.coffee \
+			   $(DIR)/prototyping/String.coffee \
 			   $(DIR)/AbstractView.coffee \
-			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
-			#    $(DIR)/ShapeFactory.coffee $(DIR)/LinkFactory.coffee
+			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 
-CSS_FILES = css/uml.sass
+CSS_FILES = css/general.sass css/uml.sass css/uml_edit.sass
 
 make:
 	# compile coffee

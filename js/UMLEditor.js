@@ -10,6 +10,14 @@
     Configurators: {}
   };
 
+  String.prototype._idSafe = function() {
+    return this.replace(/([\u0080-\uffff]|\s+)/g, "_");
+  };
+
+  String.prototype._capitalize = function() {
+    return this[0].toUpperCase() + this.slice(1);
+  };
+
   App.AbstractView = (function() {
     function AbstractView(model, container) {
       this.model = model;
@@ -57,7 +65,19 @@
 
   App.UMLClass = (function() {
     function UMLClass(name, attributes, methods) {
-      var ref, view;
+      var attribute, j, k, len, len1, method, ref, view;
+      for (j = 0, len = attributes.length; j < len; j++) {
+        attribute = attributes[j];
+        if (!attribute.visibility) {
+          attribute.visibility = "public";
+        }
+      }
+      for (k = 0, len1 = methods.length; k < len1; k++) {
+        method = methods[k];
+        if (!method.visibility) {
+          method.visibility = "public";
+        }
+      }
       this.name = name;
       this.attributes = attributes;
       this.methods = methods;
@@ -65,6 +85,11 @@
         "class": new App.UMLClassView(this, d3.select("svg")),
         edit: new App.UMLClassEditView(this)
       };
+      Object.defineProperty(this.views, "all", {
+        enumerable: false,
+        writable: false,
+        value: ["class", "edit"]
+      });
       ref = this.views;
       for (name in ref) {
         view = ref[name];
@@ -72,21 +97,32 @@
       }
     }
 
-    UMLClass.prototype.update = function(properties) {
-      var key, name, ref, val, view;
-      if (properties == null) {
-        properties = {};
+    UMLClass.prototype.update = function(attributes, methods, viewsToUpdate) {
+      var j, len, viewName;
+      if (viewsToUpdate == null) {
+        viewsToUpdate = this.views.all;
       }
-      for (key in properties) {
-        val = properties[key];
-        this[key] = val;
+      if (attributes != null) {
+        this.attributes = attributes;
       }
-      ref = this.views;
-      for (name in ref) {
-        view = ref[name];
-        view.redraw(properties);
+      if (methods != null) {
+        this.methods = methods;
+      }
+      for (j = 0, len = viewsToUpdate.length; j < len; j++) {
+        viewName = viewsToUpdate[j];
+        this.views[viewName].redraw();
       }
       return this;
+    };
+
+    UMLClass.prototype.enterEditMode = function() {
+      this.views.edit.show();
+      return true;
+    };
+
+    UMLClass.prototype.exitEditMode = function() {
+      this.views.edit.hide();
+      return true;
     };
 
     return UMLClass;
@@ -126,19 +162,14 @@
   };
 
   stringifyAttribute = function(attribute) {
-    var suffix;
-    if (attribute.name != null) {
-      if (attribute.visibility == null) {
-        attribute.visibility = "public";
-      }
-      if (attribute.type != null) {
-        suffix = ": " + attribute.type;
-      } else {
-        suffix = "";
-      }
-      return ((stringifyVisibility(attribute.visibility)) + " " + attribute.name + suffix).trim();
+    var suffix, visibility;
+    visibility = attribute.visibility || "public";
+    if (attribute.type != null) {
+      suffix = ": " + attribute.type;
+    } else {
+      suffix = "";
     }
-    return "+ " + attribute;
+    return ((stringifyVisibility(visibility)) + " " + attribute.name + suffix).trim();
   };
 
   stringifyMethod = function(method) {
@@ -236,7 +267,16 @@
                 "class": "rect"
               }, {
                 tag: "text",
-                "class": "text"
+                "class": "text",
+                y: "1em",
+                "font-weight": "bold"
+              }, {
+                tag: "text",
+                "class": "edit hidden",
+                "font-family": "'Glyphicons Halflings'",
+                "font-size": "13px",
+                html: "\u270f",
+                y: 16
               }
             ]
           }, {
@@ -248,7 +288,8 @@
                 "class": "rect"
               }, {
                 tag: "text",
-                "class": "text"
+                "class": "text",
+                y: "1em"
               }
             ]
           }, {
@@ -260,19 +301,20 @@
                 "class": "rect"
               }, {
                 tag: "text",
-                "class": "text"
+                "class": "text",
+                y: "1em"
               }
             ]
           }
         ]
       };
       container = App.AbstractView.appendDataToSVG(container, data);
-      container.select("*").attr("transform", "translate(0,0)");
       return container;
     };
 
     UMLClassView.prototype._bindEvents = function(container) {
-      var drag;
+      var drag, self;
+      self = this;
       drag = d3.behavior.drag().origin(function(d, i) {
         var elem, translation;
         elem = d3.select(this);
@@ -288,7 +330,17 @@
         elem.attr("transform", "translate(" + evt.x + ", " + evt.y + ")");
         return true;
       });
-      container.select(".uml.class").call(drag);
+      container.select(".uml.class").on("mouseenter", function() {
+        container.select(".edit").classed("hidden", false);
+        return true;
+      }).on("mouseleave", function() {
+        container.select(".edit").classed("hidden", true);
+        return true;
+      }).call(drag);
+      container.select(".edit").on("click", function() {
+        self.model.enterEditMode();
+        return true;
+      });
       return this;
     };
 
@@ -328,12 +380,13 @@
       w += offset.left + offset.right;
       this.container.selectAll(".part .rect").attr("width", w);
       this.container.select(".name .rect").attr("height", height);
-      this.container.select(".name .text").text(this.model.name).attr("x", (w - calculateWidth(this.model.name)) / 2).attr("y", height / 2 + 3).attr("font-weight", "bold");
+      this.container.select(".name .text").text(this.model.name).attr("x", (w - calculateWidth(this.model.name)) / 2);
+      this.container.select(".name .edit").attr("x", w - 19);
       y += height;
       height = this.model.attributes.length * (lineHeight + lineSpacing);
       this.container.select(".attributes").attr("transform", "translate(0, " + y + ")");
       this.container.select(".attributes .rect").attr("height", height);
-      this.container.select(".attributes .text").attr("y", "1em").selectAll("tspan").data((function() {
+      this.container.select(".attributes .text").selectAll("tspan").data((function() {
         var j, len, results;
         results = [];
         for (j = 0, len = stringifiedAttributes.length; j < len; j++) {
@@ -355,7 +408,7 @@
       height = this.model.methods.length * (lineHeight + lineSpacing);
       this.container.select(".methods").attr("transform", "translate(0, " + y + ")");
       this.container.select(".methods .rect").attr("height", height);
-      this.container.select(".methods .text").attr("y", "1em").selectAll("tspan").data((function() {
+      this.container.select(".methods .text").selectAll("tspan").data((function() {
         var j, len, results;
         results = [];
         for (j = 0, len = stringifiedMethods.length; j < len; j++) {
@@ -378,9 +431,15 @@
     };
 
     UMLClassView.prototype.redraw = function(properties) {
+      var elem, translation, x, y;
       if (properties == null) {
-        this.element.remove();
+        elem = this.container.select(".uml.class");
+        translation = d3.transform(elem.attr("transform")).translate;
+        x = translation[0];
+        y = translation[1];
+        elem.remove();
         this.draw();
+        this.container.select(".uml.class").attr("transform", "translate(" + x + ", " + y + ")");
         return this;
       }
       return this;
@@ -393,15 +452,132 @@
   App.UMLClassEditView = (function(superClass) {
     extend(UMLClassEditView, superClass);
 
-    function UMLClassEditView(model, container) {
-      UMLClassEditView.__super__.constructor.call(this, model, container);
+    function UMLClassEditView(model) {
+      var self;
+      UMLClassEditView.__super__.constructor.call(this, model);
+      self = this;
+      this.div = $("<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">Edit \"" + this.model.name + "\"</h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-9 col-xs-push-3\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-9 col-xs-push-3\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>");
+      this.div.find("button.reset").click(function() {});
+      this.div.find("button.save").click(function() {
+        var data;
+        data = self._getInput();
+        self.model.update(data.attributes, data.methods);
+        self.hide();
+        return true;
+      });
+      this.div.find(".attributes .add").click(function() {
+        self.div.find(".attributes form").append(self._createFormRow({
+          name: "new attribute",
+          type: "new type",
+          visibility: "public"
+        }, true));
+        return true;
+      });
+      this.div.find(".methods .add").click(function() {
+        self.div.find(".methods form").append(self._createFormRow({
+          name: "new method",
+          type: "new type",
+          visibility: "public"
+        }, false));
+        return true;
+      });
+      $(document.body).append(this.div);
+      this.hide();
     }
 
+    UMLClassEditView.prototype._getInput = function() {
+      var attributes, methods;
+      attributes = [];
+      methods = [];
+      this.div.find(".attributes .form-group").each(function(elem, idx) {
+        var formGroup;
+        formGroup = $(this);
+        attributes.push({
+          name: formGroup.find(".name").val(),
+          type: formGroup.find(".type").val(),
+          visibility: formGroup.find(".visibility").val(),
+          "default": formGroup.find(".nullCheckbox").prop("checked") ? null : formGroup.find(".default").val()
+        });
+        return true;
+      });
+      this.div.find(".methods .form-group").each(function(elem, idx) {
+        var formGroup;
+        formGroup = $(this);
+        methods.push({
+          name: formGroup.find(".name").val(),
+          type: formGroup.find(".type").val(),
+          visibility: formGroup.find(".visibility").val()
+        });
+        return true;
+      });
+      return {
+        attributes: attributes,
+        methods: methods
+      };
+    };
+
+    UMLClassEditView.prototype._createFormRow = function(property, isAttribute) {
+      var div, id;
+      if (isAttribute == null) {
+        isAttribute = true;
+      }
+      id = "id_" + (this.model.name._idSafe()) + "_" + (property.name._idSafe());
+      div = $("<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"" + id + "\" class=\"col-xs-3 control-label\">" + property.name + "</label>\n      <div class=\"col-xs-7\">\n          <input type=\"text\" id=\"" + id + "\" class=\"form-control name\" placeholder=\"Name\" value=\"" + property.name + "\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-7 col-xs-push-3\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"" + property.type + "\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-7 col-xs-push-3\">\n          <select class=\"form-control visibility\">\n              <option value=\"public\"" + (property.visibility === "public" ? " selected" : "") + ">+ public</option>\n              <option value=\"private\"" + (property.visibility === "private" ? " selected" : "") + ">- private</option>\n              <option value=\"protected\"" + (property.visibility === "protected" ? " selected" : "") + "># protected</option>\n              <option value=\"package\"" + (property.visibility === "package" ? " selected" : "") + ">~ package</option>\n          </select>\n      </div>\n  </div>\n  " + (isAttribute ? "<div class=\"row padded\">\n    <div class=\"col-xs-4 col-xs-push-3\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"" + (property["default"] || "") + "\" data-original-value=\"" + (property["default"] || "") + "\" data-current-value=\"" + (property["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-3 col-xs-push-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\"" + (property["default"] != null ? "" : " checked") + " />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n</div>" : "") + "\n</div>");
+      div.find("#" + id).blur(function() {
+        var input;
+        input = $(this);
+        input.parent().siblings("label").text(input.val());
+        return true;
+      });
+      div.find(".close.hidden").click(function() {
+        if (confirm("Remove '" + property.name + "'?")) {
+          div.remove();
+        }
+        return true;
+      });
+      div.find(".nullCheckbox").change(function() {
+        var box, input;
+        box = $(this);
+        input = box.closest(".row").find(".default");
+        if (box.is(":checked")) {
+          input.attr("data-current-value", input.val());
+          input.val("");
+        } else {
+          input.val(input.attr("data-current-value"));
+        }
+        return true;
+      });
+      return div;
+    };
+
     UMLClassEditView.prototype.draw = function() {
+      var attribute, body, j, k, len, len1, method, ref, ref1;
+      body = this.div.find(".modal-body .attributes form").empty();
+      ref = this.model.attributes;
+      for (j = 0, len = ref.length; j < len; j++) {
+        attribute = ref[j];
+        body.append(this._createFormRow(attribute));
+      }
+      body = this.div.find(".modal-body .methods form").empty();
+      ref1 = this.model.methods;
+      for (k = 0, len1 = ref1.length; k < len1; k++) {
+        method = ref1[k];
+        body.append(this._createFormRow(method, false));
+      }
       return this;
     };
 
-    UMLClassEditView.prototype.redraw = function(properties) {
+    UMLClassEditView.prototype.redraw = function() {
+      return this.draw();
+    };
+
+    UMLClassEditView.prototype.show = function() {
+      this.div.modal("show");
+      return this;
+    };
+
+    UMLClassEditView.prototype.hide = function() {
+      this.div.modal("hide");
       return this;
     };
 

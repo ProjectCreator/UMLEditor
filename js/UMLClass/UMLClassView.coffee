@@ -22,15 +22,12 @@ stringifyParameters = (parameters) ->
 
 
 stringifyAttribute = (attribute) ->
-    if attribute.name?
-        if not attribute.visibility?
-            attribute.visibility = "public"
-        if attribute.type?
-            suffix = ": #{attribute.type}"
-        else
-            suffix = ""
-        return "#{stringifyVisibility(attribute.visibility)} #{attribute.name}#{suffix}".trim()
-    return "+ #{attribute}"
+    visibility = attribute.visibility or "public"
+    if attribute.type?
+        suffix = ": #{attribute.type}"
+    else
+        suffix = ""
+    return "#{stringifyVisibility(visibility)} #{attribute.name}#{suffix}".trim()
 
 stringifyMethod = (method) ->
     if method.name?
@@ -112,6 +109,16 @@ class App.UMLClassView extends App.AbstractView
                         {
                             tag: "text"
                             class: "text"
+                            y: "1em"
+                            "font-weight": "bold"
+                        }
+                        {
+                            tag: "text"
+                            class: "edit hidden"
+                            "font-family": "'Glyphicons Halflings'"
+                            "font-size": "13px"
+                            html: "\u270f"
+                            y: 16
                         }
                     ]
                 }
@@ -126,6 +133,7 @@ class App.UMLClassView extends App.AbstractView
                         {
                             tag: "text"
                             class: "text"
+                            y: "1em"
                         }
                     ]
                 }
@@ -140,6 +148,7 @@ class App.UMLClassView extends App.AbstractView
                         {
                             tag: "text"
                             class: "text"
+                            y: "1em"
                         }
                     ]
                 }
@@ -147,10 +156,12 @@ class App.UMLClassView extends App.AbstractView
         }
 
         container = App.AbstractView.appendDataToSVG container, data
-        container.select("*").attr "transform", "translate(0,0)"
+        # container.select("*").attr "transform", "translate(0,0)"
+        # TODO: set @element!
         return container
 
     _bindEvents: (container) ->
+        self = @
         drag = d3.behavior.drag()
             .origin (d, i) ->
                 elem = d3.select(@)
@@ -164,7 +175,18 @@ class App.UMLClassView extends App.AbstractView
                 elem = d3.select(@)
                 elem.attr "transform", "translate(#{evt.x}, #{evt.y})"
                 return true
-        container.select(".uml.class").call(drag)
+        container.select(".uml.class")
+            .on "mouseenter", () ->
+                container.select(".edit").classed "hidden", false
+                return true
+            .on "mouseleave", () ->
+                container.select(".edit").classed "hidden", true
+                return true
+            .call(drag)
+
+        container.select(".edit").on "click", () ->
+            self.model.enterEditMode()
+            return true
 
         return @
 
@@ -201,8 +223,10 @@ class App.UMLClassView extends App.AbstractView
         @container.select(".name .text")
             .text @model.name
             .attr "x", (w - calculateWidth(@model.name)) / 2
-            .attr "y", height / 2 + 3
-            .attr "font-weight", "bold"
+            # .attr "y", "1em"
+            # .attr "font-weight", "bold"
+        @container.select(".name .edit")
+            .attr "x", w - 19
 
 
         y += height
@@ -214,7 +238,7 @@ class App.UMLClassView extends App.AbstractView
             .attr "height", height
         @container.select(".attributes .text")
             # from http://stackoverflow.com/questions/18571540/html5-svg-text-positioning
-            .attr "y", "1em"
+            # .attr "y", "1em"
             .selectAll "tspan"
             .data ({text: attribute} for attribute in stringifiedAttributes)
             .enter()
@@ -235,7 +259,7 @@ class App.UMLClassView extends App.AbstractView
         @container.select(".methods .rect")
             .attr "height", height
         @container.select(".methods .text")
-            .attr "y", "1em"
+            # .attr "y", "1em"
             .selectAll "tspan"
             .data ({text: method} for method in stringifiedMethods)
             .enter()
@@ -254,8 +278,13 @@ class App.UMLClassView extends App.AbstractView
     #
     redraw: (properties) ->
         if not properties?
-            @element.remove()
+            elem = @container.select(".uml.class")
+            translation = d3.transform(elem.attr("transform")).translate
+            x = translation[0]
+            y = translation[1]
+            elem.remove()
             @draw()
+            @container.select(".uml.class").attr "transform", "translate(#{x}, #{y})"
             return @
 
         # redraw only those things that need to be redrawn
