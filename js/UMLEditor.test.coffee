@@ -41,7 +41,7 @@ $(document).ready () ->
             }
         ]
         {
-            abstract: true
+            # abstract: true
             interface: true
         }
     )

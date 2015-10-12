@@ -122,7 +122,23 @@ class App.UMLClassView extends App.AbstractView
                             tag: "text"
                             class: "text"
                             y: "1em"
-                            "font-weight": "bold"
+                            children: [
+                                {
+                                    tag: "tspan"
+                                    class: "keywords"
+                                }
+                                {
+                                    tag: "tspan"
+                                    "font-weight": "bold"
+                                    class: "name"
+                                    dy: "1.2em"
+                                }
+                                {
+                                    tag: "tspan"
+                                    class: "properties"
+                                    dy: "1.2em"
+                                }
+                            ]
                         }
                         {
                             tag: "text"
@@ -214,15 +230,18 @@ class App.UMLClassView extends App.AbstractView
         h = calculateHeight(@model.name, @model.attributes, @model.methods)
 
         # TODO: create a javascript style file for each "theme"
-        y = 0
-        height = 20
         lineHeight = 18
         lineSpacing = 3
         offset =
             left: 4
             right: 0
-
         w += offset.left + offset.right
+        y = 0
+
+        isInterface = @model.isInterface
+        isAbstract = @model.isAbstract
+
+        height = lineHeight * 3
 
 
         @container.selectAll(".part .rect")
@@ -231,9 +250,18 @@ class App.UMLClassView extends App.AbstractView
 
         @container.select(".name .rect")
             .attr "height", height
-        @container.select(".name .text")
+        if isInterface
+            @container.select(".name .text .keywords")
+                .text "<<interface>>"
+                .attr "x", (w - calculateWidth("<<interface>>")) / 2
+        @container.select(".name .text .name")
             .text @model.name
             .attr "x", (w - calculateWidth(@model.name)) / 2
+        if isAbstract
+            @container.select(".name .text .properties")
+                .text "{abstract}"
+                .attr "x", (w - calculateWidth("{abstract}")) / 2
+
         @container.select(".name .edit")
             .attr "x", w - 19
 

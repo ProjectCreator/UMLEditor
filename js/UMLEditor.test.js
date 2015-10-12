@@ -36,7 +36,6 @@
         visibility: "public"
       }
     ], {
-      abstract: true,
       "interface": true
     });
     console.log(uml);

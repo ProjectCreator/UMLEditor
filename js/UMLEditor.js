@@ -312,7 +312,21 @@
                 tag: "text",
                 "class": "text",
                 y: "1em",
-                "font-weight": "bold"
+                children: [
+                  {
+                    tag: "tspan",
+                    "class": "keywords"
+                  }, {
+                    tag: "tspan",
+                    "font-weight": "bold",
+                    "class": "name",
+                    dy: "1.2em"
+                  }, {
+                    tag: "tspan",
+                    "class": "properties",
+                    dy: "1.2em"
+                  }
+                ]
               }, {
                 tag: "text",
                 "class": "edit hidden",
@@ -388,7 +402,7 @@
     };
 
     UMLClassView.prototype.draw = function(x, y) {
-      var attribute, h, height, lineHeight, lineSpacing, method, offset, stringifiedAttributes, stringifiedMethods, w;
+      var attribute, h, height, isAbstract, isInterface, lineHeight, lineSpacing, method, offset, stringifiedAttributes, stringifiedMethods, w;
       this.element = this._createElements(this.container);
       stringifiedAttributes = (function() {
         var j, len, ref, results;
@@ -412,8 +426,6 @@
       }).call(this);
       w = calculateWidth(this.model.name, stringifiedAttributes, stringifiedMethods);
       h = calculateHeight(this.model.name, this.model.attributes, this.model.methods);
-      y = 0;
-      height = 20;
       lineHeight = 18;
       lineSpacing = 3;
       offset = {
@@ -421,9 +433,19 @@
         right: 0
       };
       w += offset.left + offset.right;
+      y = 0;
+      isInterface = this.model.isInterface;
+      isAbstract = this.model.isAbstract;
+      height = lineHeight * 3;
       this.container.selectAll(".part .rect").attr("width", w);
       this.container.select(".name .rect").attr("height", height);
-      this.container.select(".name .text").text(this.model.name).attr("x", (w - calculateWidth(this.model.name)) / 2);
+      if (isInterface) {
+        this.container.select(".name .text .keywords").text("<<interface>>").attr("x", (w - calculateWidth("<<interface>>")) / 2);
+      }
+      this.container.select(".name .text .name").text(this.model.name).attr("x", (w - calculateWidth(this.model.name)) / 2);
+      if (isAbstract) {
+        this.container.select(".name .text .properties").text("{abstract}").attr("x", (w - calculateWidth("{abstract}")) / 2);
+      }
       this.container.select(".name .edit").attr("x", w - 19);
       y += height;
       height = this.model.attributes.length * (lineHeight + lineSpacing);
