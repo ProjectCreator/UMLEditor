@@ -14,6 +14,17 @@
     return this.replace(/([\u0080-\uffff]|\s+)/g, "_");
   };
 
+  String.prototype._idUnique = function() {
+    var i, orig, str;
+    orig = this;
+    str = orig;
+    i = 0;
+    while (document.getElementById(str)) {
+      str = orig + "-" + (i++);
+    }
+    return "" + str;
+  };
+
   String.prototype._capitalize = function() {
     return this[0].toUpperCase() + this.slice(1);
   };
@@ -64,7 +75,7 @@
   })();
 
   App.UMLClass = (function() {
-    function UMLClass(name, attributes, methods) {
+    function UMLClass(name, attributes, methods, options) {
       var attribute, j, k, len, len1, method, ref, view;
       for (j = 0, len = attributes.length; j < len; j++) {
         attribute = attributes[j];
@@ -77,10 +88,15 @@
         if (!method.visibility) {
           method.visibility = "public";
         }
+        if (!method.parameters) {
+          method.parameters = [];
+        }
       }
       this.name = name;
       this.attributes = attributes;
       this.methods = methods;
+      this.isAbstract = options.abstract || false;
+      this.isInterface = options["interface"] || false;
       this.views = {
         "class": new App.UMLClassView(this, d3.select("svg")),
         edit: new App.UMLClassEditView(this)
@@ -97,7 +113,7 @@
       }
     }
 
-    UMLClass.prototype.update = function(attributes, methods, viewsToUpdate) {
+    UMLClass.prototype.update = function(attributes, methods, options, viewsToUpdate) {
       var j, len, viewName;
       if (viewsToUpdate == null) {
         viewsToUpdate = this.views.all;
@@ -108,11 +124,23 @@
       if (methods != null) {
         this.methods = methods;
       }
+      this.isAbstract = options.isAbstract;
+      this.isInterface = options.isInterface;
       for (j = 0, len = viewsToUpdate.length; j < len; j++) {
         viewName = viewsToUpdate[j];
         this.views[viewName].redraw();
       }
       return this;
+    };
+
+    UMLClass.prototype["delete"] = function() {
+      var name, ref, view;
+      ref = this.views;
+      for (name in ref) {
+        view = ref[name];
+        view["delete"]();
+      }
+      return null;
     };
 
     UMLClass.prototype.enterEditMode = function() {
@@ -246,10 +274,24 @@
     function UMLClassView(model, container) {
       UMLClassView.__super__.constructor.call(this, model, container);
       this.element = null;
+      this.id = this._getId();
+      this.settings = {
+        showVisibility: true,
+        showTypes: true
+      };
     }
+
+    UMLClassView.prototype["delete"] = function() {
+      this.element.remove();
+      return null;
+    };
 
     UMLClassView.prototype.adjustSize = function() {
       return this;
+    };
+
+    UMLClassView.prototype._getId = function() {
+      return this.model.name._idSafe()._idUnique();
     };
 
     UMLClassView.prototype._createElements = function(container) {
@@ -257,6 +299,7 @@
       data = {
         tag: "g",
         "class": "uml class",
+        id: this.id,
         children: [
           {
             tag: "g",
@@ -309,7 +352,7 @@
         ]
       };
       container = App.AbstractView.appendDataToSVG(container, data);
-      return container;
+      return container.select("#" + this.id);
     };
 
     UMLClassView.prototype._bindEvents = function(container) {
@@ -330,7 +373,7 @@
         elem.attr("transform", "translate(" + evt.x + ", " + evt.y + ")");
         return true;
       });
-      container.select(".uml.class").on("mouseenter", function() {
+      this.element.on("mouseenter", function() {
         container.select(".edit").classed("hidden", false);
         return true;
       }).on("mouseleave", function() {
@@ -346,7 +389,7 @@
 
     UMLClassView.prototype.draw = function(x, y) {
       var attribute, h, height, lineHeight, lineSpacing, method, offset, stringifiedAttributes, stringifiedMethods, w;
-      this._createElements(this.container);
+      this.element = this._createElements(this.container);
       stringifiedAttributes = (function() {
         var j, len, ref, results;
         ref = this.model.attributes;
@@ -431,15 +474,14 @@
     };
 
     UMLClassView.prototype.redraw = function(properties) {
-      var elem, translation, x, y;
+      var translation, x, y;
       if (properties == null) {
-        elem = this.container.select(".uml.class");
-        translation = d3.transform(elem.attr("transform")).translate;
+        translation = d3.transform(this.element.attr("transform")).translate;
         x = translation[0];
         y = translation[1];
-        elem.remove();
+        this.element.remove();
         this.draw();
-        this.container.select(".uml.class").attr("transform", "translate(" + x + ", " + y + ")");
+        this.element.attr("transform", "translate(" + x + ", " + y + ")");
         return this;
       }
       return this;
@@ -456,12 +498,29 @@
       var self;
       UMLClassEditView.__super__.constructor.call(this, model);
       self = this;
-      this.div = $("<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">Edit \"" + this.model.name + "\"</h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-9 col-xs-push-3\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-9 col-xs-push-3\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>");
-      this.div.find("button.reset").click(function() {});
+      this.div = $("<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Edit \"" + this.model.name + "\"\n                    <button type=\"button\" class=\"btn btn-danger deleteClass right hpadded\">Delete class</button>\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"general\">\n                    <h4>General options</h4>\n                    <form class=\"form-horizontal form-group\">\n                        <div class=\"row\">\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"abstractCheckbox\"" + (model.isAbstract ? " checked" : "") + " />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is abstract?\" />\n                                </div>\n                            </div>\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"interfaceCheckbox\"" + (model.isInterface ? " checked" : "") + " />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is interface?\" />\n                                </div>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary btn-lg save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>");
+      this.div.find("button.deleteClass").click(function() {
+        if (confirm("Are you really sure you want to delete the class '" + self.model.name + "' and all of its incoming and outgoing dependencies?")) {
+          self.div.modal("hide");
+          self.div.on("hidden.bs.modal", function() {
+            self.model["delete"]();
+            return true;
+          });
+        }
+        return true;
+      });
+      this.div.find("button.cancel").click(function() {
+        self.draw();
+        return true;
+      });
+      this.div.find("button.reset").click(function() {
+        self.draw();
+        return true;
+      });
       this.div.find("button.save").click(function() {
         var data;
         data = self._getInput();
-        self.model.update(data.attributes, data.methods);
+        self.model.update(data.attributes, data.methods, data.generalOptions);
         self.hide();
         return true;
       });
@@ -485,10 +544,18 @@
       this.hide();
     }
 
+    UMLClassEditView.prototype["delete"] = function() {
+      this.div.remove();
+      return null;
+    };
+
     UMLClassEditView.prototype._getInput = function() {
-      var attributes, methods;
+      var attributes, generalOptions, methods;
+      generalOptions = {};
       attributes = [];
       methods = [];
+      generalOptions.isAbstract = this.div.find(".general .abstractCheckbox").prop("checked");
+      generalOptions.isInterface = this.div.find(".general .interfaceCheckbox").prop("checked");
       this.div.find(".attributes .form-group").each(function(elem, idx) {
         var formGroup;
         formGroup = $(this);
@@ -500,36 +567,68 @@
         });
         return true;
       });
-      this.div.find(".methods .form-group").each(function(elem, idx) {
-        var formGroup;
+      this.div.find(".methods .form-group").each(function() {
+        var formGroup, parameters;
         formGroup = $(this);
+        parameters = [];
+        formGroup.find(".row.parameter").each(function() {
+          var paramRow;
+          paramRow = $(this);
+          parameters.push({
+            name: paramRow.find(".name").val(),
+            type: paramRow.find(".type").val(),
+            "default": paramRow.find(".nullCheckbox").prop("checked") ? null : paramRow.find(".default").val()
+          });
+          return true;
+        });
         methods.push({
           name: formGroup.find(".name").val(),
           type: formGroup.find(".type").val(),
-          visibility: formGroup.find(".visibility").val()
+          visibility: formGroup.find(".visibility").val(),
+          parameters: parameters
         });
         return true;
       });
       return {
+        generalOptions: generalOptions,
         attributes: attributes,
         methods: methods
       };
     };
 
+    UMLClassEditView.prototype._createParamRow = function(param) {
+      return "<div class=\"row padded parameter\">\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control name\" placeholder=\"parameter name\" value=\"" + param.name + "\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control type\" placeholder=\"parameter type\" value=\"" + param.type + "\" />\n    </div>\n    <div class=\"col-xs-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"default\" value=\"" + (param["default"] || "") + "\" data-current-value=\"" + (param["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\" />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n    <div class=\"col-xs-1\">\n        <button type=\"button\" class=\"close parameter hidden\" title=\"Remove parameter\">\n            <span>&times;</span>\n        </button>\n    </div>\n</div>";
+    };
+
+    UMLClassEditView.prototype._createFormParamList = function(method) {
+      var j, len, param, ref, res;
+      res = "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>";
+      if (method.parameters != null) {
+        ref = method.parameters;
+        for (j = 0, len = ref.length; j < len; j++) {
+          param = ref[j];
+          res += this._createParamRow(param);
+        }
+      }
+      res += "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>";
+      return res;
+    };
+
     UMLClassEditView.prototype._createFormRow = function(property, isAttribute) {
-      var div, id;
+      var div, id, self;
       if (isAttribute == null) {
         isAttribute = true;
       }
-      id = "id_" + (this.model.name._idSafe()) + "_" + (property.name._idSafe());
-      div = $("<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"" + id + "\" class=\"col-xs-3 control-label\">" + property.name + "</label>\n      <div class=\"col-xs-7\">\n          <input type=\"text\" id=\"" + id + "\" class=\"form-control name\" placeholder=\"Name\" value=\"" + property.name + "\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-7 col-xs-push-3\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"" + property.type + "\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-7 col-xs-push-3\">\n          <select class=\"form-control visibility\">\n              <option value=\"public\"" + (property.visibility === "public" ? " selected" : "") + ">+ public</option>\n              <option value=\"private\"" + (property.visibility === "private" ? " selected" : "") + ">- private</option>\n              <option value=\"protected\"" + (property.visibility === "protected" ? " selected" : "") + "># protected</option>\n              <option value=\"package\"" + (property.visibility === "package" ? " selected" : "") + ">~ package</option>\n          </select>\n      </div>\n  </div>\n  " + (isAttribute ? "<div class=\"row padded\">\n    <div class=\"col-xs-4 col-xs-push-3\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"" + (property["default"] || "") + "\" data-original-value=\"" + (property["default"] || "") + "\" data-current-value=\"" + (property["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-3 col-xs-push-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\"" + (property["default"] != null ? "" : " checked") + " />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n</div>" : "") + "\n</div>");
+      self = this;
+      id = ("id_" + (this.model.name._idSafe()) + "_" + (property.name._idSafe()))._idUnique();
+      div = $("<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"" + id + "\" class=\"col-xs-2 control-label\">" + property.name + "</label>\n      <div class=\"col-xs-8\">\n          <input type=\"text\" id=\"" + id + "\" class=\"form-control name\" placeholder=\"Name\" value=\"" + property.name + "\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close property hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"" + property.type + "\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <select class=\"form-control visibility\">\n              <option value=\"public\"" + (property.visibility === "public" ? " selected" : "") + ">+ public</option>\n              <option value=\"private\"" + (property.visibility === "private" ? " selected" : "") + ">- private</option>\n              <option value=\"protected\"" + (property.visibility === "protected" ? " selected" : "") + "># protected</option>\n              <option value=\"package\"" + (property.visibility === "package" ? " selected" : "") + ">~ package</option>\n          </select>\n      </div>\n  </div>\n  " + (isAttribute ? "<div class=\"row padded\">\n    <div class=\"col-xs-4 col-xs-push-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"" + (property["default"] || "") + "\" data-current-value=\"" + (property["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-4 col-xs-push-2\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\"" + (property["default"] != null ? "" : " checked") + " />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n</div>" : "<div class=\"row padded\">\n    <div class=\"col-xs-8 col-xs-push-2\">\n        " + (this._createFormParamList(property)) + "\n    </div>\n</div>") + "\n</div>");
       div.find("#" + id).blur(function() {
         var input;
         input = $(this);
         input.parent().siblings("label").text(input.val());
         return true;
       });
-      div.find(".close.hidden").click(function() {
+      div.find(".close.hidden.property").click(function() {
         if (confirm("Remove '" + property.name + "'?")) {
           div.remove();
         }
@@ -547,16 +646,30 @@
         }
         return true;
       });
+      div.find(".add.parameter").click(function() {
+        $(this).closest(".row").before(self._createParamRow({
+          name: "",
+          type: "",
+          "default": null
+        }));
+        return true;
+      });
+      div.find(".close.hidden.parameter").click(function() {
+        $(this).closest(".row").remove();
+        return true;
+      });
       return div;
     };
 
     UMLClassEditView.prototype.draw = function() {
       var attribute, body, j, k, len, len1, method, ref, ref1;
+      this.div.find(".general .abstractCheckbox").prop("checked", this.model.isAbstract);
+      this.div.find(".general .interfaceCheckbox").prop("checked", this.model.isInterface);
       body = this.div.find(".modal-body .attributes form").empty();
       ref = this.model.attributes;
       for (j = 0, len = ref.length; j < len; j++) {
         attribute = ref[j];
-        body.append(this._createFormRow(attribute));
+        body.append(this._createFormRow(attribute, true));
       }
       body = this.div.find(".modal-body .methods form").empty();
       ref1 = this.model.methods;

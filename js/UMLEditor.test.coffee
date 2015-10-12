@@ -23,8 +23,15 @@ $(document).ready () ->
                 type: "String"
                 visibility: "public"
                 parameters: [
-                    name: "a"
-                    type: "Integer"
+                    {
+                        name: "a"
+                        type: "Integer"
+                        default: 12
+                    }
+                    {
+                        name: "b"
+                        type: "Boolean"
+                    }
                 ]
             }
             {
@@ -33,6 +40,10 @@ $(document).ready () ->
                 visibility: "public"
             }
         ]
+        {
+            abstract: true
+            interface: true
+        }
     )
     console.log uml
     return true

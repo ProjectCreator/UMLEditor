@@ -87,16 +87,28 @@ class App.UMLClassView extends App.AbstractView
     constructor: (model, container) ->
         super(model, container)
         @element = null
+        @id = @_getId()
+        @settings =
+            showVisibility: true
+            showTypes: true
+
+    delete: () ->
+        @element.remove()
+        return null
 
     # adjust rectangle size after prop update
     adjustSize: () ->
         # TODO
         return @
 
+    _getId: () ->
+        return @model.name._idSafe()._idUnique()
+
     _createElements: (container) ->
         data = {
             tag: "g"
             class: "uml class"
+            id: @id
             children: [
                 {
                     tag: "g"
@@ -156,9 +168,7 @@ class App.UMLClassView extends App.AbstractView
         }
 
         container = App.AbstractView.appendDataToSVG container, data
-        # container.select("*").attr "transform", "translate(0,0)"
-        # TODO: set @element!
-        return container
+        return container.select("##{@id}")
 
     _bindEvents: (container) ->
         self = @
@@ -175,7 +185,8 @@ class App.UMLClassView extends App.AbstractView
                 elem = d3.select(@)
                 elem.attr "transform", "translate(#{evt.x}, #{evt.y})"
                 return true
-        container.select(".uml.class")
+
+        @element
             .on "mouseenter", () ->
                 container.select(".edit").classed "hidden", false
                 return true
@@ -193,7 +204,7 @@ class App.UMLClassView extends App.AbstractView
 
     # @Override
     draw: (x, y) ->
-        @_createElements(@container)
+        @element = @_createElements(@container)
 
         # TODO: put the following lines into adjustSize() and call it here
         stringifiedAttributes = (stringifyAttribute(attribute) for attribute in @model.attributes)
@@ -223,11 +234,8 @@ class App.UMLClassView extends App.AbstractView
         @container.select(".name .text")
             .text @model.name
             .attr "x", (w - calculateWidth(@model.name)) / 2
-            # .attr "y", "1em"
-            # .attr "font-weight", "bold"
         @container.select(".name .edit")
             .attr "x", w - 19
-
 
         y += height
         height = @model.attributes.length * (lineHeight + lineSpacing)
@@ -238,7 +246,6 @@ class App.UMLClassView extends App.AbstractView
             .attr "height", height
         @container.select(".attributes .text")
             # from http://stackoverflow.com/questions/18571540/html5-svg-text-positioning
-            # .attr "y", "1em"
             .selectAll "tspan"
             .data ({text: attribute} for attribute in stringifiedAttributes)
             .enter()
@@ -259,7 +266,6 @@ class App.UMLClassView extends App.AbstractView
         @container.select(".methods .rect")
             .attr "height", height
         @container.select(".methods .text")
-            # .attr "y", "1em"
             .selectAll "tspan"
             .data ({text: method} for method in stringifiedMethods)
             .enter()
@@ -278,13 +284,12 @@ class App.UMLClassView extends App.AbstractView
     #
     redraw: (properties) ->
         if not properties?
-            elem = @container.select(".uml.class")
-            translation = d3.transform(elem.attr("transform")).translate
+            translation = d3.transform(@element.attr("transform")).translate
             x = translation[0]
             y = translation[1]
-            elem.remove()
+            @element.remove()
             @draw()
-            @container.select(".uml.class").attr "transform", "translate(#{x}, #{y})"
+            @element.attr "transform", "translate(#{x}, #{y})"
             return @
 
         # redraw only those things that need to be redrawn
