@@ -1,2 +1,2 @@
 window.App =
-    Configurators: {}
+    Templates: {}

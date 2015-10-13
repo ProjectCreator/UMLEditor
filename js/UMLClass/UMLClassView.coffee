@@ -180,38 +180,54 @@ class App.UMLClassView extends App.AbstractView
                         }
                     ]
                 }
+                {
+                    tag: "g"
+                    class: "overlayWrapper"
+                    children: [
+                        {
+                            tag: "rect"
+                            class: "overlay"
+                        }
+                        {
+                            tag: "text"
+                            class: "text"
+                            y: "1em"
+                        }
+                    ]
+                }
             ]
         }
 
         container = App.AbstractView.appendDataToSVG container, data
         return container.select("##{@id}")
 
-    _bindEvents: (container) ->
+    _bindEvents: () ->
         self = @
+        element = @element
         drag = d3.behavior.drag()
             .origin (d, i) ->
-                elem = d3.select(@)
-                translation = d3.transform(elem.attr("transform")).translate
+                # element = d3.select(@)
+                translation = d3.transform(element.attr("transform")).translate
                 return {
-                    x: elem.attr("x") + translation[0]
-                    y: elem.attr("y") + translation[1]
+                    x: element.attr("x") + translation[0]
+                    y: element.attr("y") + translation[1]
                 }
             .on "drag", () ->
                 evt = d3.event
-                elem = d3.select(@)
-                elem.attr "transform", "translate(#{evt.x}, #{evt.y})"
+                # element = d3.select(@)
+                element.attr "transform", "translate(#{evt.x}, #{evt.y})"
                 return true
 
         @element
             .on "mouseenter", () ->
-                container.select(".edit").classed "hidden", false
+                element.select(".edit").classed "hidden", false
                 return true
             .on "mouseleave", () ->
-                container.select(".edit").classed "hidden", true
+                element.select(".edit").classed "hidden", true
                 return true
             .call(drag)
 
-        container.select(".edit").on "click", () ->
+        @element.select(".edit").on "click", () ->
             self.model.enterEditMode()
             return true
 
@@ -226,8 +242,10 @@ class App.UMLClassView extends App.AbstractView
         stringifiedAttributes = (stringifyAttribute(attribute) for attribute in @model.attributes)
         stringifiedMethods = (stringifyMethod(method) for method in @model.methods)
 
-        w = calculateWidth(@model.name, stringifiedAttributes, stringifiedMethods)
-        h = calculateHeight(@model.name, @model.attributes, @model.methods)
+        name = @model.name
+        w = calculateWidth(name, stringifiedAttributes, stringifiedMethods)
+        # h = calculateHeight(name, @model.attributes, @model.methods)
+        totalHeight = 0
 
         # TODO: create a javascript style file for each "theme"
         lineHeight = 18
@@ -242,37 +260,39 @@ class App.UMLClassView extends App.AbstractView
         isAbstract = @model.isAbstract
 
         height = lineHeight * 3
+        totalHeight += height
 
 
-        @container.selectAll(".part .rect")
+        @element.selectAll(".part .rect")
             .attr "width", w
 
 
-        @container.select(".name .rect")
+        @element.select(".name .rect")
             .attr "height", height
         if isInterface
-            @container.select(".name .text .keywords")
+            @element.select(".name .text .keywords")
                 .text "<<interface>>"
                 .attr "x", (w - calculateWidth("<<interface>>")) / 2
-        @container.select(".name .text .name")
-            .text @model.name
-            .attr "x", (w - calculateWidth(@model.name)) / 2
+        @element.select(".name .text .name")
+            .text name
+            .attr "x", (w - calculateWidth(name)) / 2
         if isAbstract
-            @container.select(".name .text .properties")
+            @element.select(".name .text .properties")
                 .text "{abstract}"
                 .attr "x", (w - calculateWidth("{abstract}")) / 2
 
-        @container.select(".name .edit")
+        @element.select(".name .edit")
             .attr "x", w - 19
 
         y += height
         height = @model.attributes.length * (lineHeight + lineSpacing)
+        totalHeight += height
 
-        @container.select(".attributes")
+        @element.select(".attributes")
             .attr "transform", "translate(0, #{y})"
-        @container.select(".attributes .rect")
+        @element.select(".attributes .rect")
             .attr "height", height
-        @container.select(".attributes .text")
+        @element.select(".attributes .text")
             # from http://stackoverflow.com/questions/18571540/html5-svg-text-positioning
             .selectAll "tspan"
             .data ({text: attribute} for attribute in stringifiedAttributes)
@@ -288,12 +308,13 @@ class App.UMLClassView extends App.AbstractView
 
         y += height
         height = @model.methods.length * (lineHeight + lineSpacing)
+        totalHeight += height
 
-        @container.select(".methods")
+        @element.select(".methods")
             .attr "transform", "translate(0, #{y})"
-        @container.select(".methods .rect")
+        @element.select(".methods .rect")
             .attr "height", height
-        @container.select(".methods .text")
+        @element.select(".methods .text")
             .selectAll "tspan"
             .data ({text: method} for method in stringifiedMethods)
             .enter()
@@ -305,7 +326,16 @@ class App.UMLClassView extends App.AbstractView
                     return lineHeight + lineSpacing
                 return 0
 
-        @_bindEvents(@container)
+        @element.select(".overlay")
+            .attr "width", w
+            .attr "height", totalHeight
+        @element.select(".overlayWrapper .text")
+            .text name
+            .attr "x", (w - calculateWidth(name)) / 2
+            .attr "y", totalHeight / 2
+
+
+        @_bindEvents()
 
         return @
 

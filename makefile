@@ -2,7 +2,10 @@ PROJECT_NAME = UMLEditor
 
 DIR = ./js
 COFFEE_FILES = $(DIR)/namespaces.coffee \
-			   $(DIR)/prototyping/String.coffee \
+			   $(DIR)/prototyping/String.coffee $(DIR)/prototyping/Array.coffee \
+			   ./templates/navbar.coffee \
+			   ./templates/svg.coffee \
+			   $(DIR)/UMLEditor.coffee \
 			   $(DIR)/AbstractView.coffee \
 			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee
 DEBUG_FILE = $(DIR)/debug.coffee

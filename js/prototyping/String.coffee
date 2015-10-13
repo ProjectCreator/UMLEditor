@@ -11,3 +11,7 @@ String::_idUnique = () ->
 
 String::_capitalize = () ->
     return @[0].toUpperCase() + @slice(1)
+
+
+String::contains = (needle) ->
+    return @indexOf(needle) >= 0
