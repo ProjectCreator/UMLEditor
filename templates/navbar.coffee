@@ -51,9 +51,6 @@ App.Templates.navbar = """<nav class="navbar navbar-default">
                             <span>&times;</span>
                         </button>
                     </div>
-                    <button type="submit" class="btn btn-default">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button>
                 </form>
             </ul>
         </div>

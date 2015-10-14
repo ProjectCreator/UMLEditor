@@ -58,9 +58,39 @@
     return this;
   };
 
-  App.Templates.navbar = "<nav class=\"navbar navbar-default\">\n<div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n        <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n    </div>\n\n    <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav\">\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        New class &nbsp;\n                        <span class=\"glyphicon glyphicon-plus\"></span>\n                    </span>\n                </a>\n            </li>\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        Connect classes &nbsp;\n                        <span class=\"glyphicon glyphicon-link\"></span>\n                    </span>\n                </a>\n            </li>\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        Arrange &nbsp;\n                        <span class=\"glyphicon glyphicon-transfer\"></span>\n                    </span>\n                </a>\n            </li>\n            <!-- <li class=\"dropdown\">\n                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>\n                <ul class=\"dropdown-menu\">\n                    <li><a href=\"#\">Action</a></li>\n                    <li><a href=\"#\">Another action</a></li>\n                    <li><a href=\"#\">Something else here</a></li>\n                    <li role=\"separator\" class=\"divider\"></li>\n                    <li><a href=\"#\">Separated link</a></li>\n                    <li role=\"separator\" class=\"divider\"></li>\n                    <li><a href=\"#\">One more separated link</a></li>\n                </ul>\n            </li> -->\n        </ul>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <form class=\"navbar-form\" role=\"search\">\n                <div class=\"form-group relative\">\n                    <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                    <button type=\"button\" class=\"close\" title=\"Clear search\">\n                        <span>&times;</span>\n                    </button>\n                </div>\n                <button type=\"submit\" class=\"btn btn-default\">\n                    <span class=\"glyphicon glyphicon-search\"></span>\n                </button>\n            </form>\n        </ul>\n    </div>\n</div>\n</nav>";
+  Object.defineProperties(Array.prototype, {
+    first: {
+      get: function() {
+        return this[0];
+      },
+      set: function(v) {
+        this[0] = v;
+        return this;
+      }
+    },
+    second: {
+      get: function() {
+        return this[1];
+      },
+      set: function(v) {
+        this[1] = v;
+        return this;
+      }
+    },
+    last: {
+      get: function() {
+        return this[this.length - 1];
+      },
+      set: function(v) {
+        this[this.length - 1] = v;
+        return this;
+      }
+    }
+  });
 
-  App.Templates.svg = "<div class=\"svgWrapper\">\n<svg class=\"uml\">\n    <rect class=\"background\" width=\"100%\" height=\"100%\"></rect>\n</svg>\n</div>";
+  App.Templates.navbar = "<nav class=\"navbar navbar-default\">\n<div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n        <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n    </div>\n\n    <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n        <ul class=\"nav navbar-nav\">\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        New class &nbsp;\n                        <span class=\"glyphicon glyphicon-plus\"></span>\n                    </span>\n                </a>\n            </li>\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        Connect classes &nbsp;\n                        <span class=\"glyphicon glyphicon-link\"></span>\n                    </span>\n                </a>\n            </li>\n            <li>\n                <a href=\"#\">\n                    <span class=\"label label-primary label-lg\">\n                        Arrange &nbsp;\n                        <span class=\"glyphicon glyphicon-transfer\"></span>\n                    </span>\n                </a>\n            </li>\n            <!-- <li class=\"dropdown\">\n                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>\n                <ul class=\"dropdown-menu\">\n                    <li><a href=\"#\">Action</a></li>\n                    <li><a href=\"#\">Another action</a></li>\n                    <li><a href=\"#\">Something else here</a></li>\n                    <li role=\"separator\" class=\"divider\"></li>\n                    <li><a href=\"#\">Separated link</a></li>\n                    <li role=\"separator\" class=\"divider\"></li>\n                    <li><a href=\"#\">One more separated link</a></li>\n                </ul>\n            </li> -->\n        </ul>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <form class=\"navbar-form\" role=\"search\">\n                <div class=\"form-group relative\">\n                    <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                    <button type=\"button\" class=\"close\" title=\"Clear search\">\n                        <span>&times;</span>\n                    </button>\n                </div>\n            </form>\n        </ul>\n    </div>\n</div>\n</nav>";
+
+  App.Templates.svg = "<div class=\"svgWrapper\">\n<svg class=\"uml\">\n    <rect class=\"background\" width=\"100%\" height=\"100%\"></rect>\n    <g class=\"zoomer\"></g>\n</svg>\n</div>";
 
   App.UMLEditor = (function() {
     function UMLEditor() {
@@ -68,11 +98,16 @@
       self = this;
       navbar = $(Mustache.to_html(App.Templates.navbar));
       svg = $(Mustache.to_html(App.Templates.svg));
-      d3svg = d3.select(svg[0]);
+      d3svg = d3.select(svg.find("svg.uml")[0]);
+      this.svg = d3svg;
       searchBar = navbar.find(".search");
       closeBtn = searchBar.siblings(".close");
-      searchBar.keyup(function() {
-        var clss, j, k, len, len1, ref, ref1, results, results1, val;
+      searchBar.keyup(function(evt) {
+        var clss, j, k, len, len1, ref, ref1, val;
+        if (evt.which === 27) {
+          closeBtn.click();
+          return true;
+        }
         val = searchBar.val();
         if ((val != null ? val.length : void 0) > 0) {
           closeBtn.fadeIn(100);
@@ -82,28 +117,25 @@
         if ((val != null ? val.length : void 0) > 2) {
           d3svg.select(".background").classed("searching", true);
           ref = self.classes;
-          results = [];
           for (j = 0, len = ref.length; j < len; j++) {
             clss = ref[j];
             if (!clss.name.contains(val)) {
-              results.push(clss.views["class"].element.classed("searching", true));
+              clss.views["class"].element.classed("searching", true);
             }
           }
-          return results;
         } else {
           d3svg.select(".background").classed("searching", false);
           ref1 = self.classes;
-          results1 = [];
           for (k = 0, len1 = ref1.length; k < len1; k++) {
             clss = ref1[k];
-            results1.push(clss.views["class"].element.classed("searching", false));
+            clss.views["class"].element.classed("searching", false);
           }
-          return results1;
         }
+        return true;
       });
       closeBtn.click(function() {
         searchBar.val("").keyup();
-        return this;
+        return true;
       });
       $(document.body).append(navbar).append(svg);
       this.classes = [];
@@ -116,6 +148,77 @@
         throw new Error("Class with name '" + umlClass.name + "' already exists!");
       }
       return this;
+    };
+
+    UMLEditor.prototype.getClass = function(name) {
+      var clss, j, len, ref;
+      ref = this.classes;
+      for (j = 0, len = ref.length; j < len; j++) {
+        clss = ref[j];
+        if (clss.name === name) {
+          return clss;
+        }
+      }
+      return null;
+    };
+
+    UMLEditor.prototype.draw = function() {
+      var clss, g, initialScale, inner, j, len, ref, render, self, svg, zoom;
+      self = this;
+      g = new dagreD3.graphlib.Graph().setGraph({});
+      ref = this.classes;
+      for (j = 0, len = ref.length; j < len; j++) {
+        clss = ref[j];
+        g.setNode(clss.name, {
+          shape: "umlClass",
+          label: "",
+          className: clss.name
+        });
+      }
+      g.setEdge(this.classes.first.name, this.classes.second.name, {});
+      svg = this.svg;
+      inner = svg.select(".zoomer");
+      zoom = d3.behavior.zoom().on("zoom", function() {
+        inner.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+        return true;
+      });
+      svg.call(zoom);
+      render = new dagreD3.render();
+      render.shapes().umlClass = function(parent, bbox, node) {
+        var elem, h, points, w;
+        elem = clss.views["class"].element;
+        bbox = elem.node().getBBox();
+        w = bbox.width;
+        h = bbox.height;
+        clss = self.getClass(node.className);
+        points = [
+          {
+            x: 0,
+            y: 0
+          }, {
+            x: w,
+            y: 0
+          }, {
+            x: w,
+            y: -h
+          }, {
+            x: 0,
+            y: -h
+          }
+        ];
+        elem.attr("transform", "translate(" + (-w * 0.5) + ", " + (-h * 0.5) + ")");
+        node.intersect = function(point) {
+          return dagreD3.intersect.polygon(node, points, point);
+        };
+        parent.append(function() {
+          return elem.node();
+        });
+        return elem;
+      };
+      render(inner, g);
+      initialScale = 0.75;
+      zoom.translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+      return svg.attr('height', g.graph().height * initialScale + 40);
     };
 
     return UMLEditor;
@@ -479,29 +582,16 @@
     };
 
     UMLClassView.prototype._bindEvents = function() {
-      var drag, element, self;
+      var element, self;
       self = this;
       element = this.element;
-      drag = d3.behavior.drag().origin(function(d, i) {
-        var translation;
-        translation = d3.transform(element.attr("transform")).translate;
-        return {
-          x: element.attr("x") + translation[0],
-          y: element.attr("y") + translation[1]
-        };
-      }).on("drag", function() {
-        var evt;
-        evt = d3.event;
-        element.attr("transform", "translate(" + evt.x + ", " + evt.y + ")");
-        return true;
-      });
       this.element.on("mouseenter", function() {
         element.select(".edit").classed("hidden", false);
         return true;
       }).on("mouseleave", function() {
         element.select(".edit").classed("hidden", true);
         return true;
-      }).call(drag);
+      });
       this.element.select(".edit").on("click", function() {
         self.model.enterEditMode();
         return true;

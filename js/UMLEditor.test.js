@@ -3,6 +3,7 @@
   $(document).ready(function() {
     var editor, uml, uml2;
     editor = new App.UMLEditor();
+    console.log(editor);
     uml = new App.UMLClass(editor, "my class", [
       {
         name: "prop1",

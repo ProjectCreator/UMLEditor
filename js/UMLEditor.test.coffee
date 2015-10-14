@@ -1,5 +1,6 @@
 $(document).ready () ->
     editor = new App.UMLEditor()
+    console.log editor
 
     uml = new App.UMLClass(
         editor

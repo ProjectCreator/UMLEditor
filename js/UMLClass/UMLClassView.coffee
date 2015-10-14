@@ -204,19 +204,19 @@ class App.UMLClassView extends App.AbstractView
     _bindEvents: () ->
         self = @
         element = @element
-        drag = d3.behavior.drag()
-            .origin (d, i) ->
-                # element = d3.select(@)
-                translation = d3.transform(element.attr("transform")).translate
-                return {
-                    x: element.attr("x") + translation[0]
-                    y: element.attr("y") + translation[1]
-                }
-            .on "drag", () ->
-                evt = d3.event
-                # element = d3.select(@)
-                element.attr "transform", "translate(#{evt.x}, #{evt.y})"
-                return true
+        # drag = d3.behavior.drag()
+        #     .origin (d, i) ->
+        #         # element = d3.select(@)
+        #         translation = d3.transform(element.attr("transform")).translate
+        #         return {
+        #             x: element.attr("x") + translation[0]
+        #             y: element.attr("y") + translation[1]
+        #         }
+        #     .on "drag", () ->
+        #         evt = d3.event
+        #         # element = d3.select(@)
+        #         element.attr "transform", "translate(#{evt.x}, #{evt.y})"
+        #         return true
 
         @element
             .on "mouseenter", () ->
@@ -225,7 +225,7 @@ class App.UMLClassView extends App.AbstractView
             .on "mouseleave", () ->
                 element.select(".edit").classed "hidden", true
                 return true
-            .call(drag)
+            # .call(drag)
 
         @element.select(".edit").on "click", () ->
             self.model.enterEditMode()
