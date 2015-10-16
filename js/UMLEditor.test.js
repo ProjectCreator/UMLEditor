@@ -40,7 +40,6 @@
     ], {
       "interface": true
     });
-    console.log(uml);
     uml2 = new App.UMLClass(editor, "my 2nd class", [
       {
         name: "prop1",
@@ -70,7 +69,9 @@
     ], {
       abstract: true
     });
-    console.log(uml2);
+    editor.addClass(uml);
+    editor.addClass(uml2);
+    editor.draw();
     return true;
   });
 

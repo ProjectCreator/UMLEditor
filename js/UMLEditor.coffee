@@ -3,54 +3,49 @@ class App.UMLEditor
     # CONSTRUCTOR
     constructor: () ->
         self = @
-        navbar = $ Mustache.to_html(App.Templates.navbar)
-        svg = $ Mustache.to_html(App.Templates.svg)
-        d3svg = d3.select svg.find("svg.uml")[0]
-        @svg = d3svg
 
-        searchBar = navbar.find(".search")
-        closeBtn = searchBar.siblings(".close")
-        searchBar.keyup (evt) ->
-            if evt.which is 27
-                closeBtn.click()
-                return true
-
-            val = searchBar.val()
-            if val?.length > 0
-                closeBtn.fadeIn(100)
-            else
-                closeBtn.fadeOut(100)
-
-            if val?.length > 2
-                d3svg.select(".background").classed "searching", true
-                for clss in self.classes when not clss.name.contains(val)
-                    clss.views.class.element.classed "searching", true
-            else
-                d3svg.select(".background").classed "searching", false
-                for clss in self.classes
-                    clss.views.class.element.classed "searching", false
-
-            return true
-
-        closeBtn.click () ->
-            searchBar
-                .val ""
-                .keyup()
-
-            return true
-
+        # svg = App.Templates.get("svg")
+        # @svg = d3.select svg.find("svg.uml").get(0)
+        @svg = null
+        navbar = App.Templates.get("navbar", @)
+        @connectionModal = App.Templates.get("chooseConnection", @)
+        # @chooseStatus = App.Templates.get("selectClassesForConnection", @)
+        @dataCollector = new App.UMLConnectionDataCollector(@)
 
         $(document.body)
             .append navbar
-            .append svg
+            .append @connectionModal
+            .append @chooseStatus
 
         @classes = []
 
+    resetSvg: () ->
+        svg = App.Templates.get("svg")
+        if @svg?
+            $(@svg.node()).replaceWith svg
+        else
+            $(document.body).append svg
+        @svg = d3.select(svg.find("svg.uml").get(0))
+        return @
+
     addClass: (umlClass) ->
-        if umlClass not in @classes
+        if umlClass.name not in (clss.name for clss in @classes)
             @classes.push umlClass
         else
             throw new Error("Class with name '#{umlClass.name}' already exists!")
+        return @
+
+    removeClass: (umlClass) ->
+        umlClass.delete()
+        @classes.remove umlClass
+        return @
+
+    addConnection: (connection) ->
+        sourceClass = @getClass(connection.source)
+        sourceClass.addConnection connection
+        return @
+
+    removeConnection: () ->
         return @
 
     getClass: (name) ->
@@ -58,16 +53,43 @@ class App.UMLEditor
             return clss
         return null
 
+    showConnectionModal: () ->
+        @connectionModal.modal("show")
+        return @
+
+    hideConnectionModal: () ->
+        @connectionModal.modal("hide")
+        return @
+
+    showClassNamesOnly: () ->
+        for clss in @classes
+            clss.views.class.showOverlay()
+        return @
+
+    showClassData: () ->
+        for clss in @classes
+            clss.views.class.hideOverlay()
+        return @
+
     draw: () ->
         self = @
+
+        @resetSvg()
+
         # Create a new directed graph
         g = new dagreD3.graphlib.Graph().setGraph({})
 
         for clss in @classes
+            # TODO: make draw return a ready template instead of redrawing and using that redrawn element
+            clss.views.class.element?.remove()
+            clss.views.class.draw()
             g.setNode clss.name, {shape: "umlClass", label: "", className: clss.name}
 
+        for clss in @classes
+            for connection in clss.outConnections
+                g.setEdge(connection.source, connection.target, {arrowhead: connection.type})
+
         # TODO: this is a test only!
-        g.setEdge(@classes.first.name, @classes.second.name, {})
 
         svg = @svg
         inner = svg.select(".zoomer")
@@ -84,7 +106,6 @@ class App.UMLEditor
         render.shapes().umlClass = (parent, bbox, node) ->
             # w = bbox.width
             # h = bbox.height
-
             elem = clss.views.class.element
             bbox = elem.node().getBBox()
             w = bbox.width
@@ -108,6 +129,8 @@ class App.UMLEditor
             parent.append () ->
                 return elem.node()
             return elem
+
+        render.arrows().generalization = App.Connections.Generalization.getArrowhead()
 
         # Add our custom shape (a house)
         # render.shapes().house = (parent, bbox, node) ->
@@ -153,10 +176,14 @@ class App.UMLEditor
         # Run the renderer. This is what draws the final graph.
         render(inner, g)
 
+        bbox = svg.node().getBBox()
+        width = bbox.width
+        height = bbox.height
+
         # Center the graph
-        initialScale = 0.75
+        initialScale = 1
         zoom
-            .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20])
+            .translate([(width - g.graph().width * initialScale) / 2, 20])
             .scale(initialScale)
             .event(svg)
-        svg.attr('height', g.graph().height * initialScale + 40)
+        # svg.attr('height', g.graph().height * initialScale + 40)

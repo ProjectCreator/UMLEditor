@@ -75,7 +75,7 @@ class App.UMLClassEditView extends App.AbstractView
                 if confirm "Are you really sure you want to delete the class '#{self.model.name}' and all of its incoming and outgoing dependencies?"
                     self.div.modal("hide")
                     self.div.on "hidden.bs.modal", () ->
-                        self.model.delete()
+                        self.model.editor.removeClass self.model
                         return true
                 return true
 

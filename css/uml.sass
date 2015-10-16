@@ -39,11 +39,16 @@ $searchBackground: rgb(200, 200, 200)
     width: 100%
     height: 800px
 
+    &.edit .modal-dialog
+        width: 1000px
+
     .class
         // cursor: move
 
         .overlayWrapper
+            cursor: pointer
             display: none
+
 
             .overlay
                 fill: white
@@ -51,6 +56,13 @@ $searchBackground: rgb(200, 200, 200)
                 font-size: 16px
                 font-weight: bold
 
+            &:hover, &.selected
+                .overlay
+                    // from bootstrap's alert-info
+                    fill: #d9edf7
+                    stroke: #bce8f1
+                .text
+                    fill: #31708f
         .edit
             cursor: pointer
 

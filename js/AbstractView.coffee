@@ -2,9 +2,8 @@
 class App.AbstractView
 
     # CONSTRUCTOR
-    constructor: (model, container) ->
+    constructor: (model) ->
         @model = model
-        @container = container
 
     # STATIC METHODS
     @appendDataToSVG: (container, data) ->

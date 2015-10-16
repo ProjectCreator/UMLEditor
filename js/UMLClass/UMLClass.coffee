@@ -1,8 +1,7 @@
 class App.UMLClass
 
     # CONSTRUCTOR
-    constructor: (editor, name, attributes, methods, options) ->
-
+    constructor: (editor, name, attributes, methods, options = {}) ->
         # preprocess data
         for attribute in attributes when not attribute.visibility
             attribute.visibility = "public"
@@ -18,11 +17,10 @@ class App.UMLClass
         @methods = methods
         @isAbstract = options.abstract or false
         @isInterface = options.interface or false
+        @outConnections = []
 
-        @editor.addClass @
-
-        @views      =
-            class:  new App.UMLClassView(@, d3.select("svg"))
+        @views =
+            class:  new App.UMLClassView(@)
             edit:   new App.UMLClassEditView(@)
         Object.defineProperty @views, "all", {
             enumerable: false
@@ -30,9 +28,35 @@ class App.UMLClass
             value: ["class", "edit"]
         }
 
+    checkConnection: (connection) ->
+        # TODO: for generalization and realization -> prevent cycles!
+        id = connection.getId()
+        for c in @outConnections when c.getId() is id
+            throw new Error("Connection of that type already exists for class '#{@name}'")
+
+        # check other class'es outConnections for generalizations/realizations with 'this' as target
+        type = connection.getType()
+        if type is "generalization" or type is "realization"
+            for c in @editor.getClass(connection.target).outConnections
+                type = c.getType()
+                if (type is "generalization" or type is "realization") and c.target is @name
+                    throw new Error("Cyclic generalization or realization detected!")
+
+        return @
+
+    addConnection: (connection) ->
+        try
+            @checkConnection connection
+            @outConnections.push connection
+        catch err
+            console.error err
+        return @
+
+    drawAll: () ->
         # initial draw for views
         for name, view of @views
             view.draw()
+        return @
 
     # update properties and redraw all views
     update: (attributes, methods, options, viewsToUpdate = @views.all) ->
@@ -52,7 +76,6 @@ class App.UMLClass
     delete: () ->
         for name, view of @views
             view.delete()
-        @editor.classes.remove @
         return null
 
     # TODO: controller-like

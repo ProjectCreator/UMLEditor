@@ -14,6 +14,19 @@
     margin-left: 15px
     margin-right: 15px
 
+.bigger
+    font-size: 1.1em
+
+.clickable
+    cursor: pointer
+
+    & input
+        cursor: pointer
+
+.centered
+    text-align: center
+    vertical-align: middle
+
 .right
     float: right
 
@@ -23,13 +36,18 @@
 .relative
     position: relative
 
-
+// BOOTSTRAP
 .label-lg
     font-size: 100%
     padding: .3em .6em .4em .6em
 
-.modal-dialog
-    width: 1000px
+.alert-sm
+    font-size: 0.9em
+    padding: 12px
+
+.form-control.no-focus:focus
+    border-color: #ccc
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075)
 .navbar
 
     a
@@ -71,11 +89,16 @@ $searchBackground: rgb(200, 200, 200)
     width: 100%
     height: 800px
 
+    &.edit .modal-dialog
+        width: 1000px
+
     .class
         // cursor: move
 
         .overlayWrapper
+            cursor: pointer
             display: none
+
 
             .overlay
                 fill: white
@@ -83,6 +106,13 @@ $searchBackground: rgb(200, 200, 200)
                 font-size: 16px
                 font-weight: bold
 
+            &:hover, &.selected
+                .overlay
+                    // from bootstrap's alert-info
+                    fill: #d9edf7
+                    stroke: #bce8f1
+                .text
+                    fill: #31708f
         .edit
             cursor: pointer
 
@@ -132,3 +162,18 @@ $searchBackground: rgb(200, 200, 200)
 
                 .close.parameter
                     display: block !important
+.edgePaths .path
+    stroke: black
+    stroke-width: 1.5px
+.selectClassesForConnection
+    left: 25%
+    display: none
+    position: fixed
+    top: 5px
+    right: 25%
+    z-index: 100
+
+    .alert
+        box-shadow: 0px 0px 10px 1px #a94442
+        margin-bottom: 0px
+        padding-right: 40px

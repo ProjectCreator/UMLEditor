@@ -84,8 +84,8 @@ calculateWidth = (name, stringifiedAttributes = "", stringifiedMethods = "", cls
 class App.UMLClassView extends App.AbstractView
 
     # CONSTRUCTOR
-    constructor: (model, container) ->
-        super(model, container)
+    constructor: (model) ->
+        super(model)
         @element = null
         @id = @_getId()
         @settings =
@@ -204,20 +204,8 @@ class App.UMLClassView extends App.AbstractView
     _bindEvents: () ->
         self = @
         element = @element
-        # drag = d3.behavior.drag()
-        #     .origin (d, i) ->
-        #         # element = d3.select(@)
-        #         translation = d3.transform(element.attr("transform")).translate
-        #         return {
-        #             x: element.attr("x") + translation[0]
-        #             y: element.attr("y") + translation[1]
-        #         }
-        #     .on "drag", () ->
-        #         evt = d3.event
-        #         # element = d3.select(@)
-        #         element.attr "transform", "translate(#{evt.x}, #{evt.y})"
-        #         return true
 
+        # TODO: make this css
         @element
             .on "mouseenter", () ->
                 element.select(".edit").classed "hidden", false
@@ -225,18 +213,32 @@ class App.UMLClassView extends App.AbstractView
             .on "mouseleave", () ->
                 element.select(".edit").classed "hidden", true
                 return true
-            # .call(drag)
 
         @element.select(".edit").on "click", () ->
             self.model.enterEditMode()
             return true
 
+        overlayWrapper = @element.select(".overlayWrapper")
+        overlayWrapper.on "click", () ->
+            isActive = self.model.editor.dataCollector.toggleData overlayWrapper.select(".text").text()
+            overlayWrapper.classed "selected", isActive
+            return true
+
         return @
 
+    showOverlay: () ->
+        @element.select(".overlayWrapper")
+            .style "display", "block"
+        return @
+
+    hideOverlay: () ->
+        @element.select(".overlayWrapper")
+            .style "display", "none"
+        return @
 
     # @Override
     draw: (x, y) ->
-        @element = @_createElements(@container)
+        @element = @_createElements(@model.editor.svg)
 
         # TODO: put the following lines into adjustSize() and call it here
         stringifiedAttributes = (stringifyAttribute(attribute) for attribute in @model.attributes)
@@ -340,16 +342,16 @@ class App.UMLClassView extends App.AbstractView
         return @
 
     #
-    redraw: (properties) ->
-        if not properties?
-            translation = d3.transform(@element.attr("transform")).translate
-            x = translation[0]
-            y = translation[1]
-            @element.remove()
-            @draw()
-            @element.attr "transform", "translate(#{x}, #{y})"
-            return @
-
-        # redraw only those things that need to be redrawn
-        # TODO
-        return @
+    # redraw: (properties) ->
+    #     if not properties?
+    #         translation = d3.transform(@element.attr("transform")).translate
+    #         x = translation[0]
+    #         y = translation[1]
+    #         @element.remove()
+    #         @draw()
+    #         @element.attr "transform", "translate(#{x}, #{y})"
+    #         return @
+    #
+    #     # redraw only those things that need to be redrawn
+    #     # TODO
+    #     return @
