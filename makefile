@@ -11,7 +11,8 @@ COFFEE_FILES = $(DIR)/namespaces.coffee \
 			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
 			   $(DIR)/UMLConnection/UMLMultiplicity.coffee \
 			   $(DIR)/UMLConnection/UMLConnection.coffee \
-			   $(DIR)/UMLConnection/ClassLevel/Generalization.coffee $(DIR)/UMLConnection/ClassLevel/Realization.coffee
+			   $(DIR)/UMLConnection/ClassLevel/Generalization.coffee $(DIR)/UMLConnection/ClassLevel/Realization.coffee \
+			   $(DIR)/UMLConnection/InstanceLevel/Aggregation.coffee $(DIR)/UMLConnection/InstanceLevel/Association.coffee $(DIR)/UMLConnection/InstanceLevel/Composition.coffee
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 

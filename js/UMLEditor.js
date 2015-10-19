@@ -414,7 +414,7 @@
         for (l = 0, len2 = ref3.length; l < len2; l++) {
           connection = ref3[l];
           g.setEdge(connection.source, connection.target, {
-            arrowhead: connection.type
+            arrowhead: connection.getType()
           });
         }
       }
@@ -428,11 +428,11 @@
       render = new dagreD3.render();
       render.shapes().umlClass = function(parent, bbox, node) {
         var elem, h, points, w;
+        clss = self.getClass(node.className);
         elem = clss.views["class"].element;
         bbox = elem.node().getBBox();
         w = bbox.width;
         h = bbox.height;
-        clss = self.getClass(node.className);
         points = [
           {
             x: 0,
@@ -458,6 +458,10 @@
         return elem;
       };
       render.arrows().generalization = App.Connections.Generalization.getArrowhead();
+      render.arrows().realization = App.Connections.Realization.getArrowhead();
+      render.arrows().aggregation = App.Connections.Aggregation.getArrowhead();
+      render.arrows().association = App.Connections.Association.getArrowhead();
+      render.arrows().composition = App.Connections.Composition.getArrowhead();
       render(inner, g);
       bbox = svg.node().getBBox();
       width = bbox.width;
@@ -1263,52 +1267,12 @@
     };
 
     UMLConnection.getArrowhead = function() {
-      return function(parent, id, edge, type) {};
+      throw new Error("Implment me!");
     };
 
     return UMLConnection;
 
   })();
-
-
-  /*
-  NOTE: from joint js
-  
-  joint.shapes.uml.Generalization = joint.dia.Link.extend({
-      defaults: {
-          type: 'uml.Generalization',
-          attrs: { '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' }}
-      }
-  });
-  
-  joint.shapes.uml.Implementation = joint.dia.Link.extend({
-      defaults: {
-          type: 'uml.Implementation',
-          attrs: {
-              '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' },
-              '.connection': { 'stroke-dasharray': '3,3' }
-          }
-      }
-  });
-  
-  joint.shapes.uml.Aggregation = joint.dia.Link.extend({
-      defaults: {
-          type: 'uml.Aggregation',
-          attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white' }}
-      }
-  });
-  
-  joint.shapes.uml.Composition = joint.dia.Link.extend({
-      defaults: {
-          type: 'uml.Composition',
-          attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black' }}
-      }
-  });
-  
-  joint.shapes.uml.Association = joint.dia.Link.extend({
-      defaults: { type: 'uml.Association' }
-  });
-   */
 
   App.Connections.Generalization = (function(superClass) {
     extend(Generalization, superClass);
@@ -1320,14 +1284,93 @@
     Generalization.getArrowhead = function() {
       return function(parent, id, edge, type) {
         var marker, path;
-        marker = parent.append("marker").attr("id", id).attr("viewBox", "0 0 10 10").attr("refX", 9).attr("refY", 5).attr("markerUnits", "strokeWidth").attr("markerWidth", 8).attr("markerHeight", 6).attr("orient", "auto");
-        path = marker.append("path").attr("d", "M 20 0 L 0 10 L 20 20 z").style("stroke-width", 1).style("fill", "#fff").style("stroke", "#333");
+        marker = parent.append("marker").attr("id", id).attr("viewBox", "0 0 10 15").attr("refX", 11).attr("refY", 7.5).attr("markerUnits", "strokeWidth").attr("markerWidth", 12).attr("markerHeight", 15).attr("orient", "auto");
+        path = marker.append("path").attr("d", "M 0 0 L 10 7.5 L 0 15 z").style("stroke-width", 1).style("fill", "#fff").style("stroke", "#000");
         dagreD3.util.applyStyle(path, edge[type + "Style"]);
         return parent;
       };
     };
 
     return Generalization;
+
+  })(App.Connections.UMLConnection);
+
+  App.Connections.Realization = (function(superClass) {
+    extend(Realization, superClass);
+
+    function Realization() {
+      return Realization.__super__.constructor.apply(this, arguments);
+    }
+
+    Realization.getArrowhead = function() {
+      return function(parent, id, edge, type) {
+        var marker, path;
+        marker = parent.append("marker").attr("id", id).attr("viewBox", "0 0 10 15").attr("refX", 11).attr("refY", 7.5).attr("markerUnits", "strokeWidth").attr("markerWidth", 12).attr("markerHeight", 15).attr("orient", "auto");
+        path = marker.append("path").attr("d", "M 0 0 L 10 7.5 L 0 15 z").style("stroke-width", 1).style("fill", "#fff").style("stroke", "#000");
+        d3.select(edge.elem).select("path").style("stroke-dasharray", "5, 5");
+        dagreD3.util.applyStyle(path, edge[type + "Style"]);
+        return parent;
+      };
+    };
+
+    return Realization;
+
+  })(App.Connections.UMLConnection);
+
+  App.Connections.Aggregation = (function(superClass) {
+    extend(Aggregation, superClass);
+
+    function Aggregation() {
+      return Aggregation.__super__.constructor.apply(this, arguments);
+    }
+
+    Aggregation.getArrowhead = function() {
+      return function(parent, id, edge, type) {
+        var marker, path;
+        marker = parent.append("marker").attr("id", id).attr("viewBox", "0 0 20 15").attr("refX", 21).attr("refY", 7.5).attr("markerUnits", "strokeWidth").attr("markerWidth", 12).attr("markerHeight", 15).attr("orient", "auto");
+        path = marker.append("path").attr("d", "M 10 0 L 20 7.5 L 10 15 L 0 7.5 z").style("stroke-width", 1).style("fill", "#fff").style("stroke", "#000");
+        dagreD3.util.applyStyle(path, edge[type + "Style"]);
+        return parent;
+      };
+    };
+
+    return Aggregation;
+
+  })(App.Connections.UMLConnection);
+
+  App.Connections.Association = (function(superClass) {
+    extend(Association, superClass);
+
+    function Association() {
+      return Association.__super__.constructor.apply(this, arguments);
+    }
+
+    Association.getArrowhead = function() {
+      return function(parent, id, edge, type) {};
+    };
+
+    return Association;
+
+  })(App.Connections.UMLConnection);
+
+  App.Connections.Composition = (function(superClass) {
+    extend(Composition, superClass);
+
+    function Composition() {
+      return Composition.__super__.constructor.apply(this, arguments);
+    }
+
+    Composition.getArrowhead = function() {
+      return function(parent, id, edge, type) {
+        var marker, path;
+        marker = parent.append("marker").attr("id", id).attr("viewBox", "0 0 20 15").attr("refX", 21).attr("refY", 7.5).attr("markerUnits", "strokeWidth").attr("markerWidth", 12).attr("markerHeight", 15).attr("orient", "auto");
+        path = marker.append("path").attr("d", "M 10 0 L 20 7.5 L 10 15 L 0 7.5 z").style("stroke-width", 1).style("fill", "#000").style("stroke", "#000");
+        dagreD3.util.applyStyle(path, edge[type + "Style"]);
+        return parent;
+      };
+    };
+
+    return Composition;
 
   })(App.Connections.UMLConnection);
 

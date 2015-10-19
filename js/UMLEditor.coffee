@@ -4,12 +4,9 @@ class App.UMLEditor
     constructor: () ->
         self = @
 
-        # svg = App.Templates.get("svg")
-        # @svg = d3.select svg.find("svg.uml").get(0)
         @svg = null
         navbar = App.Templates.get("navbar", @)
         @connectionModal = App.Templates.get("chooseConnection", @)
-        # @chooseStatus = App.Templates.get("selectClassesForConnection", @)
         @dataCollector = new App.UMLConnectionDataCollector(@)
 
         $(document.body)
@@ -87,9 +84,7 @@ class App.UMLEditor
 
         for clss in @classes
             for connection in clss.outConnections
-                g.setEdge(connection.source, connection.target, {arrowhead: connection.type})
-
-        # TODO: this is a test only!
+                g.setEdge(connection.source, connection.target, {arrowhead: connection.getType()})
 
         svg = @svg
         inner = svg.select(".zoomer")
@@ -106,11 +101,11 @@ class App.UMLEditor
         render.shapes().umlClass = (parent, bbox, node) ->
             # w = bbox.width
             # h = bbox.height
+            clss = self.getClass(node.className)
             elem = clss.views.class.element
             bbox = elem.node().getBBox()
             w = bbox.width
             h = bbox.height
-            clss = self.getClass(node.className)
             points = [
                 # bottom left
                 {x: 0, y: 0}
@@ -131,47 +126,10 @@ class App.UMLEditor
             return elem
 
         render.arrows().generalization = App.Connections.Generalization.getArrowhead()
-
-        # Add our custom shape (a house)
-        # render.shapes().house = (parent, bbox, node) ->
-        #     w = bbox.width
-        #     h = bbox.height
-        #     points = [
-        #         {x:   0,     y:        0}
-        #         {x:   w,     y:        0}
-        #         {x:   w,     y:       -h}
-        #         {x: w * 0.5, y: -h * 1.5}
-        #         {x:   0,     y:       -h}
-        #     ]
-        #     shapeSvg = parent
-        #         .insert("polygon", ":first-child")
-        #         .attr "points", ("#{d.x}, #{d.y}" for d in points).join(" ")
-        #         .attr "transform", "translate(#{-w * 0.5}, #{h * 0.75})"
-        #
-        #     node.intersect = (point) ->
-        #         return dagreD3.intersect.polygon(node, points, point)
-        #
-        #     return shapeSvg
-
-        # Add our custom arrow (a hollow-point)
-        # render.arrows().hollowPoint = (parent, id, edge, type) ->
-        #     marker = parent.append("marker")
-        #         .attr("id", id)
-        #         .attr("viewBox", "0 0 10 10")
-        #         .attr("refX", 9)
-        #         .attr("refY", 5)
-        #         .attr("markerUnits", "strokeWidth")
-        #         .attr("markerWidth", 8)
-        #         .attr("markerHeight", 6)
-        #         .attr("orient", "auto")
-        #
-        #     path = marker.append("path")
-        #         .attr("d", "M 0 0 L 10 5 L 0 10 z")
-        #         .style("stroke-width", 1)
-        #         .style("stroke-dasharray", "1,0")
-        #         .style("fill", "#fff")
-        #         .style("stroke", "#333")
-        #     dagreD3.util.applyStyle(path, edge[type + "Style"])
+        render.arrows().realization = App.Connections.Realization.getArrowhead()
+        render.arrows().aggregation = App.Connections.Aggregation.getArrowhead()
+        render.arrows().association = App.Connections.Association.getArrowhead()
+        render.arrows().composition = App.Connections.Composition.getArrowhead()
 
         # Run the renderer. This is what draws the final graph.
         render(inner, g)
@@ -186,4 +144,3 @@ class App.UMLEditor
             .translate([(width - g.graph().width * initialScale) / 2, 20])
             .scale(initialScale)
             .event(svg)
-        # svg.attr('height', g.graph().height * initialScale + 40)
