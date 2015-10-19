@@ -198,19 +198,136 @@
     }
   };
 
+  App.Templates.editUMLClass = {
+    template: "<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Edit \"{{className}}\"\n                    <button type=\"button\" class=\"btn btn-danger deleteClass right hpadded\">Delete class</button>\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"general\">\n                    <h4>General options</h4>\n                    <form class=\"form-horizontal form-group\">\n                        <div class=\"row\">\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"abstractCheckbox\"{{isAbstract}} />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is abstract?\" />\n                                </div>\n                            </div>\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"interfaceCheckbox\"{{isInterface}} />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is interface?\" />\n                                </div>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary btn-lg save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>",
+    bindEvents: function(view) {
+      var self;
+      self = this;
+      this.find("button.deleteClass").click(function() {
+        if (confirm("Are you really sure you want to delete the class '" + view.model.name + "' and all of its incoming and outgoing dependencies?")) {
+          view.hide();
+          self.on("hidden.bs.modal", function() {
+            view.model.editor.removeClass(view.model);
+            return true;
+          });
+        }
+        return true;
+      });
+      this.find("button.cancel").click(function() {
+        view.draw();
+        return true;
+      });
+      this.find("button.reset").click(function() {
+        view.draw();
+        return true;
+      });
+      this.find("button.save").click(function() {
+        var data;
+        data = view._getInput();
+        view.model.update(data.attributes, data.methods, data.generalOptions);
+        view.hide();
+        return true;
+      });
+      this.find(".attributes .add").click(function() {
+        self.find(".attributes form").append(view._createFormRow({
+          name: "new attribute",
+          type: "new type",
+          visibility: "public"
+        }, true));
+        return true;
+      });
+      this.find(".methods .add").click(function() {
+        self.find(".methods form").append(view._createFormRow({
+          name: "new method",
+          type: "new type",
+          visibility: "public"
+        }, false));
+        return true;
+      });
+      return this;
+    }
+  };
+
+  App.Templates.editUMLClassParamRow = {
+    template: "<div class=\"row padded parameter\">\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control name\" placeholder=\"parameter name\" value=\"{{name}}\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control type\" placeholder=\"parameter type\" value=\"{{type}}\" />\n    </div>\n    <div class=\"col-xs-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"default\" value=\"{{default}}\" data-current-value=\"{{default}}\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\" />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n    <div class=\"col-xs-1\">\n        <button type=\"button\" class=\"close parameter hidden\" title=\"Remove parameter\">\n            <span>&times;</span>\n        </button>\n    </div>\n</div>"
+  };
+
+  App.Templates.editUMLClassParamList = {
+    template: "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>\n{{! this nested part must match App.Templates.editUMLClassParamRow }}\n{{#parameters}}\n    {{{.}}}\n{{/parameters}}\n<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>"
+  };
+
+  App.Templates.editUMLClassFormRow = {
+    template: "<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"{{id}}\" class=\"col-xs-2 control-label\">{{name}}</label>\n      <div class=\"col-xs-8\">\n          <input type=\"text\" id=\"{{id}}\" class=\"form-control name\" placeholder=\"Name\" value=\"{{name}}\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close property hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"{{type}}\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          {{#select}}\n              <select class=\"form-control visibility\">\n                  <option value=\"public\" {{public}}>+ public</option>\n                  <option value=\"private\" {{private}}>- private</option>\n                  <option value=\"protected\" {{protected}}># protected</option>\n                  <option value=\"package\" {{package}}>~ package</option>\n              </select>\n          {{/select}}\n      </div>\n  </div>\n  {{#paramValue}}\n      <div class=\"row padded\">\n          <div class=\"col-xs-4 col-xs-push-2\">\n              <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"{{default}}\" data-current-value=\"{{default}}\" />\n          </div>\n          <div class=\"col-xs-4 col-xs-push-2\">\n              <div class=\"input-group\">\n                  <span class=\"input-group-addon\">\n                      <input type=\"checkbox\" class=\"nullCheckbox\" {{checked}} />\n                  </span>\n                  <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n              </div>\n          </div>\n      </div>\n  {{/paramValue}}\n  {{#paramList}}\n      <div class=\"row padded\">\n          <div class=\"col-xs-8 col-xs-push-2\">\n              {{! triple mustache = unescaped HTML}}\n              {{{list}}}\n          </div>\n      </div>\n  {{/paramList}}\n</div>",
+    bindEvents: function(id) {
+      var self;
+      self = this;
+      this.find("#" + id).blur(function() {
+        var input;
+        input = $(this);
+        input.parent().siblings("label").text(input.val());
+        return true;
+      });
+      this.find(".close.hidden.property").click(function() {
+        if (confirm("Remove '" + property.name + "'?")) {
+          self.remove();
+        }
+        return true;
+      });
+      this.find(".nullCheckbox").change(function() {
+        var box, input;
+        box = $(this);
+        input = box.closest(".row").find(".default");
+        if (box.is(":checked")) {
+          input.attr("data-current-value", input.val());
+          input.val("");
+        } else {
+          input.val(input.attr("data-current-value"));
+        }
+        return true;
+      });
+      this.find(".add.parameter").click(function() {
+        $(this).closest(".row").before(App.Templates.getHTML("editUMLClassParamRow", {
+          name: "",
+          type: "",
+          "default": ""
+        }));
+        return true;
+      });
+      this.find(".close.hidden.parameter").click(function() {
+        $(this).closest(".row").remove();
+        return true;
+      });
+      return this;
+    }
+  };
+
   App.Templates.get = function() {
-    var $elem, args, name, ref, template;
-    name = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    var $elem, args, data, name, ref, template;
+    name = arguments[0], data = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
     if ((template = App.Templates[name]) != null) {
       if (template.template != null) {
-        $elem = $(Mustache.to_html(template.template));
+        $elem = $(Mustache.to_html(template.template, data));
         if ((ref = template.bindEvents) != null) {
           ref.apply($elem, args);
         }
       } else {
-        $elem = $(Mustache.to_html(template));
+        $elem = $(Mustache.to_html(template, data));
       }
       return $elem;
+    }
+    return null;
+  };
+
+  App.Templates.getHTML = function() {
+    var args, data, elem, name, template;
+    name = arguments[0], data = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+    if ((template = App.Templates[name]) != null) {
+      if (template.template != null) {
+        elem = Mustache.to_html(template.template, data);
+      } else {
+        elem = Mustache.to_html(template, data);
+      }
+      return elem;
     }
     return null;
   };
@@ -219,7 +336,7 @@
     function UMLConnectionDataCollector(editor) {
       this.editor = editor;
       this.reset();
-      this.div = App.Templates.get("selectClassesForConnection", editor);
+      this.div = App.Templates.get("selectClassesForConnection", null, editor);
       $(document.body).append(this.div);
     }
 
@@ -292,8 +409,8 @@
       var navbar, self;
       self = this;
       this.svg = null;
-      navbar = App.Templates.get("navbar", this);
-      this.connectionModal = App.Templates.get("chooseConnection", this);
+      navbar = App.Templates.get("navbar", null, this);
+      this.connectionModal = App.Templates.get("chooseConnection", null, this);
       this.dataCollector = new App.UMLConnectionDataCollector(this);
       $(document.body).append(navbar).append(this.connectionModal).append(this.chooseStatus);
       this.classes = [];
@@ -1018,48 +1135,12 @@
       var self;
       UMLClassEditView.__super__.constructor.call(this, model);
       self = this;
-      this.div = $("<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Edit \"" + this.model.name + "\"\n                    <button type=\"button\" class=\"btn btn-danger deleteClass right hpadded\">Delete class</button>\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"general\">\n                    <h4>General options</h4>\n                    <form class=\"form-horizontal form-group\">\n                        <div class=\"row\">\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"abstractCheckbox\"" + (model.isAbstract ? " checked" : "") + " />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is abstract?\" />\n                                </div>\n                            </div>\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"interfaceCheckbox\"" + (model.isInterface ? " checked" : "") + " />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is interface?\" />\n                                </div>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary btn-lg save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>");
-      this.div.find("button.deleteClass").click(function() {
-        if (confirm("Are you really sure you want to delete the class '" + self.model.name + "' and all of its incoming and outgoing dependencies?")) {
-          self.div.modal("hide");
-          self.div.on("hidden.bs.modal", function() {
-            self.model.editor.removeClass(self.model);
-            return true;
-          });
-        }
-        return true;
-      });
-      this.div.find("button.cancel").click(function() {
-        self.draw();
-        return true;
-      });
-      this.div.find("button.reset").click(function() {
-        self.draw();
-        return true;
-      });
-      this.div.find("button.save").click(function() {
-        var data;
-        data = self._getInput();
-        self.model.update(data.attributes, data.methods, data.generalOptions);
-        self.hide();
-        return true;
-      });
-      this.div.find(".attributes .add").click(function() {
-        self.div.find(".attributes form").append(self._createFormRow({
-          name: "new attribute",
-          type: "new type",
-          visibility: "public"
-        }, true));
-        return true;
-      });
-      this.div.find(".methods .add").click(function() {
-        self.div.find(".methods form").append(self._createFormRow({
-          name: "new method",
-          type: "new type",
-          visibility: "public"
-        }, false));
-        return true;
-      });
+      this.div = App.Templates.get("editUMLClass", {
+        className: this.model.name,
+        isAbstract: this.model.isAbstract,
+        isInterface: this.model.isInterface
+      }, this);
+      this.draw();
       $(document.body).append(this.div);
       this.hide();
     }
@@ -1117,68 +1198,61 @@
     };
 
     UMLClassEditView.prototype._createParamRow = function(param) {
-      return "<div class=\"row padded parameter\">\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control name\" placeholder=\"parameter name\" value=\"" + param.name + "\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control type\" placeholder=\"parameter type\" value=\"" + param.type + "\" />\n    </div>\n    <div class=\"col-xs-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"default\" value=\"" + (param["default"] || "") + "\" data-current-value=\"" + (param["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\" />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n    <div class=\"col-xs-1\">\n        <button type=\"button\" class=\"close parameter hidden\" title=\"Remove parameter\">\n            <span>&times;</span>\n        </button>\n    </div>\n</div>";
+      return App.Templates.getHTML("editUMLClassParamRow", {
+        name: param.name,
+        type: param.type,
+        "default": param["default"] || ""
+      });
     };
 
-    UMLClassEditView.prototype._createFormParamList = function(method) {
-      var j, len, param, ref, res;
-      res = "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>";
-      if (method.parameters != null) {
-        ref = method.parameters;
-        for (j = 0, len = ref.length; j < len; j++) {
-          param = ref[j];
-          res += this._createParamRow(param);
-        }
-      }
-      res += "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>";
-      return res;
+    UMLClassEditView.prototype._createParamList = function(method) {
+      var param;
+      return App.Templates.getHTML("editUMLClassParamList", {
+        parameters: (function() {
+          var j, len, ref, results;
+          ref = method.parameters || [];
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            param = ref[j];
+            results.push(App.Templates.getHTML("editUMLClassParamRow", param));
+          }
+          return results;
+        })()
+      });
     };
 
     UMLClassEditView.prototype._createFormRow = function(property, isAttribute) {
-      var div, id, self;
+      var id, paramList, paramValue, self;
       if (isAttribute == null) {
         isAttribute = true;
       }
       self = this;
       id = ("id_" + (this.model.name._idSafe()) + "_" + (property.name._idSafe()))._idUnique();
-      div = $("<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"" + id + "\" class=\"col-xs-2 control-label\">" + property.name + "</label>\n      <div class=\"col-xs-8\">\n          <input type=\"text\" id=\"" + id + "\" class=\"form-control name\" placeholder=\"Name\" value=\"" + property.name + "\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close property hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"" + property.type + "\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <select class=\"form-control visibility\">\n              <option value=\"public\"" + (property.visibility === "public" ? " selected" : "") + ">+ public</option>\n              <option value=\"private\"" + (property.visibility === "private" ? " selected" : "") + ">- private</option>\n              <option value=\"protected\"" + (property.visibility === "protected" ? " selected" : "") + "># protected</option>\n              <option value=\"package\"" + (property.visibility === "package" ? " selected" : "") + ">~ package</option>\n          </select>\n      </div>\n  </div>\n  " + (isAttribute ? "<div class=\"row padded\">\n    <div class=\"col-xs-4 col-xs-push-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"" + (property["default"] || "") + "\" data-current-value=\"" + (property["default"] || "") + "\" />\n    </div>\n    <div class=\"col-xs-4 col-xs-push-2\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\"" + (property["default"] != null ? "" : " checked") + " />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n</div>" : "<div class=\"row padded\">\n    <div class=\"col-xs-8 col-xs-push-2\">\n        " + (this._createFormParamList(property)) + "\n    </div>\n</div>") + "\n</div>");
-      div.find("#" + id).blur(function() {
-        var input;
-        input = $(this);
-        input.parent().siblings("label").text(input.val());
-        return true;
-      });
-      div.find(".close.hidden.property").click(function() {
-        if (confirm("Remove '" + property.name + "'?")) {
-          div.remove();
-        }
-        return true;
-      });
-      div.find(".nullCheckbox").change(function() {
-        var box, input;
-        box = $(this);
-        input = box.closest(".row").find(".default");
-        if (box.is(":checked")) {
-          input.attr("data-current-value", input.val());
-          input.val("");
-        } else {
-          input.val(input.attr("data-current-value"));
-        }
-        return true;
-      });
-      div.find(".add.parameter").click(function() {
-        $(this).closest(".row").before(self._createParamRow({
-          name: "",
-          type: "",
-          "default": null
-        }));
-        return true;
-      });
-      div.find(".close.hidden.parameter").click(function() {
-        $(this).closest(".row").remove();
-        return true;
-      });
-      return div;
+      if (isAttribute) {
+        paramValue = {
+          "default": property["default"] || "",
+          checked: property["default"] != null ? "" : "checked"
+        };
+      } else {
+        paramList = {
+          list: this._createParamList(property)
+        };
+      }
+      return App.Templates.get("editUMLClassFormRow", {
+        id: id,
+        name: property.name,
+        type: property.type,
+        "default": property["default"] || "",
+        isAttribute: isAttribute,
+        select: {
+          "public": property.visibility === "public" ? "selected" : "",
+          "private": property.visibility === "private" ? "selected" : "",
+          "protected": property.visibility === "protected" ? "selected" : "",
+          "package": property.visibility === "package" ? "selected" : ""
+        },
+        paramValue: paramValue,
+        paramList: paramList
+      }, id);
     };
 
     UMLClassEditView.prototype.draw = function() {

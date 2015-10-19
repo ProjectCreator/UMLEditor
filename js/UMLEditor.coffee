@@ -5,8 +5,8 @@ class App.UMLEditor
         self = @
 
         @svg = null
-        navbar = App.Templates.get("navbar", @)
-        @connectionModal = App.Templates.get("chooseConnection", @)
+        navbar = App.Templates.get("navbar", null, @)
+        @connectionModal = App.Templates.get("chooseConnection", null, @)
         @dataCollector = new App.UMLConnectionDataCollector(@)
 
         $(document.body)

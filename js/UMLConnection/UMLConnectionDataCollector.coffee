@@ -4,7 +4,7 @@ class App.UMLConnectionDataCollector
     constructor: (editor) ->
         @editor = editor
         @reset()
-        @div = App.Templates.get("selectClassesForConnection", editor)
+        @div = App.Templates.get("selectClassesForConnection", null, editor)
         $(document.body).append @div
 
     createConnection: () ->
