@@ -12,7 +12,7 @@ class App.Connections.UMLConnection
         return "#{@constructor.name}-#{@source}-#{@target}"
 
     getType: () ->
-        return @constructor.name.toLowerCase()
+        return @constructor.name
 
     @getArrowhead: () ->
         throw new Error("Implment me!")

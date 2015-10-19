@@ -125,11 +125,8 @@ class App.UMLEditor
                 return elem.node()
             return elem
 
-        render.arrows().generalization = App.Connections.Generalization.getArrowhead()
-        render.arrows().realization = App.Connections.Realization.getArrowhead()
-        render.arrows().aggregation = App.Connections.Aggregation.getArrowhead()
-        render.arrows().association = App.Connections.Association.getArrowhead()
-        render.arrows().composition = App.Connections.Composition.getArrowhead()
+        for connectionType in Object.keys(App.Connections).without("UMLConnection")
+            render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead()
 
         # Run the renderer. This is what draws the final graph.
         render(inner, g)

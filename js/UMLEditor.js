@@ -253,7 +253,7 @@
   };
 
   App.Templates.editUMLClassParamList = {
-    template: "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>\n{{! this nested part must match App.Templates.editUMLClassParamRow }}\n{{#parameters}}\n    {{{.}}}\n{{/parameters}}\n<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>"
+    template: "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>\n{{#parameters}}\n    {{{.}}}\n{{/parameters}}\n<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>"
   };
 
   App.Templates.editUMLClassFormRow = {
@@ -507,7 +507,7 @@
     };
 
     UMLEditor.prototype.draw = function() {
-      var bbox, clss, connection, g, height, initialScale, inner, j, k, l, len, len1, len2, ref, ref1, ref2, ref3, render, self, svg, width, zoom;
+      var bbox, clss, connection, connectionType, g, height, initialScale, inner, j, k, l, len, len1, len2, len3, m, ref, ref1, ref2, ref3, ref4, render, self, svg, width, zoom;
       self = this;
       this.resetSvg();
       g = new dagreD3.graphlib.Graph().setGraph({});
@@ -574,11 +574,11 @@
         });
         return elem;
       };
-      render.arrows().generalization = App.Connections.Generalization.getArrowhead();
-      render.arrows().realization = App.Connections.Realization.getArrowhead();
-      render.arrows().aggregation = App.Connections.Aggregation.getArrowhead();
-      render.arrows().association = App.Connections.Association.getArrowhead();
-      render.arrows().composition = App.Connections.Composition.getArrowhead();
+      ref4 = Object.keys(App.Connections).without("UMLConnection");
+      for (m = 0, len3 = ref4.length; m < len3; m++) {
+        connectionType = ref4[m];
+        render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead();
+      }
       render(inner, g);
       bbox = svg.node().getBBox();
       width = bbox.width;
@@ -1337,7 +1337,7 @@
     };
 
     UMLConnection.prototype.getType = function() {
-      return this.constructor.name.toLowerCase();
+      return this.constructor.name;
     };
 
     UMLConnection.getArrowhead = function() {
