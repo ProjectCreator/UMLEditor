@@ -49,6 +49,8 @@
 
 .navbar a {
   cursor: default; }
+.navbar .dropdown-menu a {
+  cursor: pointer; }
 .navbar .label {
   cursor: pointer; }
   .navbar .label:hover {

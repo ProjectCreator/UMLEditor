@@ -23,26 +23,25 @@ App.Templates.navbar =
                                         </span>
                                     </a>
                                 </li>
-                                <!--li>
+                                <li>
                                     <a href="#">
                                         <span class="label label-primary label-lg">
-                                            Arrange &nbsp;
-                                            <span class="glyphicon glyphicon-transfer"></span>
+                                            Save &nbsp;
+                                            <span class="glyphicon glyphicon-hdd"></span>
                                         </span>
                                     </a>
-                                </li>--
-                                <!-- <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                        Export as
+                                        <span class="caret"></span>
+                                    </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li><a href="#">One more separated link</a></li>
+                                        <li><a href="#">JSON</a></li>
+                                        <li><a href="#">CSON</a></li>
+                                        <li><a href="#">XML</a></li>
                                     </ul>
-                                </li> -->
+                                </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <form class="navbar-form" role="search">
