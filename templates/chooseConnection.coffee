@@ -40,9 +40,9 @@ App.Templates.chooseConnection =
                                             <div class="col-xs-8 col-xs-push-2">
                                                 <div class="input-group clickable">
                                                     <span class="input-group-addon">
-                                                        <input type="radio" name="connectionType" value="aggregation" />
+                                                        <input type="radio" name="connectionType" value="association" />
                                                     </span>
-                                                    <input type="text" class="form-control no-focus" readonly value="Aggregation ('is part of X')" />
+                                                    <input type="text" class="form-control no-focus" readonly value="Association ('has relationship to X')" />
                                                 </div>
                                             </div>
                                         </div>
@@ -50,9 +50,9 @@ App.Templates.chooseConnection =
                                             <div class="col-xs-8 col-xs-push-2">
                                                 <div class="input-group clickable">
                                                     <span class="input-group-addon">
-                                                        <input type="radio" name="connectionType" value="association" />
+                                                        <input type="radio" name="connectionType" value="aggregation" />
                                                     </span>
-                                                    <input type="text" class="form-control no-focus" readonly value="Association ('has relationship to X')" />
+                                                    <input type="text" class="form-control no-focus" readonly value="Aggregation ('is part of X')" />
                                                 </div>
                                             </div>
                                         </div>

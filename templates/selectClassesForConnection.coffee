@@ -42,7 +42,9 @@ App.Templates.selectClassesForConnection =
             return true
 
         cancelBtn.click () ->
-            editor.dataCollector
-                .hide()
+            editor
+                .showClassData()
+                .dataCollector
+                    .hide()
             return true
         return @

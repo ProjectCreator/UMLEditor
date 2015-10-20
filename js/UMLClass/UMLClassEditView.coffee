@@ -10,6 +10,7 @@ class App.UMLClassEditView extends App.AbstractView
             "editUMLClass"
             {
                 className: @model.name
+                # title: App.Templates.get("editUMLClassTitle", {className: @model.name})
                 isAbstract: @model.isAbstract
                 isInterface: @model.isInterface
             }
@@ -120,6 +121,10 @@ class App.UMLClassEditView extends App.AbstractView
         )
 
     draw: () ->
+        # TITLE
+        @div.find(".modal-title .className").text @model.name
+
+        # BODY
         @div.find(".general .abstractCheckbox").prop("checked", @model.isAbstract)
         @div.find(".general .interfaceCheckbox").prop("checked", @model.isInterface)
 

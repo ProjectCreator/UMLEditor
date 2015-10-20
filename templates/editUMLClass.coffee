@@ -7,8 +7,9 @@ App.Templates.editUMLClass =
                                     <span>&times;</span>
                                 </button>
                                 <h3 class="modal-title">
-                                    Edit "{{className}}"
+                                    <span>Edit "<span class="className">{{className}}</span>"</span>
                                     <button type="button" class="btn btn-danger deleteClass right hpadded">Delete class</button>
+                                    <button type="button" class="btn btn-default renameClass right">Rename class</button>
                                 </h3>
                             </div>
                             <div class="modal-body">
@@ -65,14 +66,19 @@ App.Templates.editUMLClass =
                 </div>"""
     bindEvents: (view) ->
         self = @
-        @find "button.deleteClass"
-            .click () ->
-                if confirm "Are you really sure you want to delete the class '#{view.model.name}' and all of its incoming and outgoing dependencies?"
-                    view.hide()
-                    self.on "hidden.bs.modal", () ->
-                        view.model.editor.removeClass view.model
-                        return true
-                return true
+        @find("button.deleteClass").click () ->
+            if confirm "Are you really sure you want to delete the class '#{view.model.name}' and all of its incoming and outgoing dependencies?"
+                view.hide()
+                self.on "hidden.bs.modal", () ->
+                    view.model.editor.removeClass view.model
+                    return true
+            return true
+
+        @find("button.renameClass").click () ->
+            if (name = prompt("Enter the new name of the class!"))?
+                view.model.name = name
+                view.draw()
+            return true
 
         @find "button.cancel"
             .click () ->

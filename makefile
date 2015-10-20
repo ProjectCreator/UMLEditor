@@ -43,3 +43,4 @@ clean:
 	rm -f css/UMLEditor.sass
 	rm -f css/UMLEditor.css
 	rm -f css/UMLEditor.css.map
+	rm -f ./.sass-cache

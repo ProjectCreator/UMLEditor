@@ -134,6 +134,7 @@
 .selectClassesForConnection {
   left: 25%;
   display: none;
+  opacity: 0.9;
   position: fixed;
   top: 5px;
   right: 25%;
