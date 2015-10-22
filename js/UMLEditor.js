@@ -265,7 +265,7 @@
 
   App.Templates.editUMLClassFormRow = {
     template: "<div class=\"form-group\">\n  <div class=\"row padded\">\n      <label for=\"{{id}}\" class=\"col-xs-2 control-label\">{{name}}</label>\n      <div class=\"col-xs-8\">\n          <input type=\"text\" id=\"{{id}}\" class=\"form-control name\" placeholder=\"Name\" value=\"{{name}}\" />\n      </div>\n      <div class=\"col-xs-1\">\n          <button type=\"button\" class=\"close property hidden\" title=\"Remove property\">\n              <span>&times;</span>\n          </button>\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          <input type=\"text\" class=\"form-control type\" placeholder=\"Type\" value=\"{{type}}\" />\n      </div>\n  </div>\n  <div class=\"row padded\">\n      <div class=\"col-xs-8 col-xs-push-2\">\n          {{#select}}\n              <select class=\"form-control visibility\">\n                  <option value=\"public\" {{public}}>+ public</option>\n                  <option value=\"private\" {{private}}>- private</option>\n                  <option value=\"protected\" {{protected}}># protected</option>\n                  <option value=\"package\" {{package}}>~ package</option>\n              </select>\n          {{/select}}\n      </div>\n  </div>\n  {{#paramValue}}\n      <div class=\"row padded\">\n          <div class=\"col-xs-4 col-xs-push-2\">\n              <input type=\"text\" class=\"form-control default\" placeholder=\"Default value (optional)\" value=\"{{default}}\" data-current-value=\"{{default}}\" />\n          </div>\n          <div class=\"col-xs-4 col-xs-push-2\">\n              <div class=\"input-group\">\n                  <span class=\"input-group-addon\">\n                      <input type=\"checkbox\" class=\"nullCheckbox\" {{checked}} />\n                  </span>\n                  <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n              </div>\n          </div>\n      </div>\n  {{/paramValue}}\n  {{#paramList}}\n      <div class=\"row padded\">\n          <div class=\"col-xs-8 col-xs-push-2\">\n              {{! triple mustache = unescaped HTML}}\n              {{{list}}}\n          </div>\n      </div>\n  {{/paramList}}\n</div>",
-    bindEvents: function(id) {
+    bindEvents: function(id, property) {
       var self;
       self = this;
       this.find("#" + id).blur(function() {
@@ -1266,7 +1266,7 @@
         },
         paramValue: paramValue,
         paramList: paramList
-      }, id);
+      }, id, property);
     };
 
     UMLClassEditView.prototype.draw = function() {

@@ -53,7 +53,7 @@ App.Templates.editUMLClassFormRow =
                     {{/paramList}}
                   </div>"""
 
-    bindEvents: (id) ->
+    bindEvents: (id, property) ->
         self = @
         @find("##{id}").blur () ->
             input = $(@)

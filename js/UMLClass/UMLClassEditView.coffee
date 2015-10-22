@@ -118,6 +118,7 @@ class App.UMLClassEditView extends App.AbstractView
                 paramList: paramList
             }
             id
+            property
         )
 
     draw: () ->
