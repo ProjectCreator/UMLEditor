@@ -95,8 +95,8 @@
   .uml .class .edit {
     cursor: pointer;
     display: none; }
-    .uml .class .edit:hover {
-      display: block; }
+  .uml .class:hover .edit {
+    display: block; }
   .uml .class .part {
     stroke: black;
     stroke-width: 2;
