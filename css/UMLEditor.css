@@ -93,7 +93,10 @@
     .uml .class .overlayWrapper:hover .text, .uml .class .overlayWrapper.selected .text {
       fill: #31708f; }
   .uml .class .edit {
-    cursor: pointer; }
+    cursor: pointer;
+    display: none; }
+    .uml .class .edit:hover {
+      display: block; }
   .uml .class .part {
     stroke: black;
     stroke-width: 2;

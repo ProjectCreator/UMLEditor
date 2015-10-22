@@ -340,6 +340,25 @@
     return null;
   };
 
+  App.Templates.getD3 = function() {
+    var args, data, elem, name, ref, template;
+    name = arguments[0], data = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+    if ((template = App.Templates[name]) != null) {
+      if (template.template != null) {
+        elem = $(Mustache.to_html(template.template, data));
+        elem = d3.select(elem.get(0));
+        if ((ref = template.bindEvents) != null) {
+          ref.apply(elem, args);
+        }
+      } else {
+        elem = Mustache.to_html(template, data);
+        elem = d3.select(elem.get(0));
+      }
+      return elem;
+    }
+    return null;
+  };
+
   App.UMLConnectionDataCollector = (function() {
     function UMLConnectionDataCollector(editor) {
       this.editor = editor;
