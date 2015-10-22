@@ -4,6 +4,7 @@ class App.UMLEditor
     constructor: () ->
         self = @
 
+        @graph = new dagreD3.graphlib.Graph({multigraph: true})
         @svg = null
         navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
@@ -74,17 +75,17 @@ class App.UMLEditor
         @resetSvg()
 
         # Create a new directed graph
-        g = new dagreD3.graphlib.Graph().setGraph({})
+        @graph = new dagreD3.graphlib.Graph({multigraph: true}).setGraph({})
 
         for clss in @classes
             # TODO: make draw return a ready template instead of redrawing and using that redrawn element
             clss.views.class.element?.remove()
             clss.views.class.draw()
-            g.setNode clss.name, {shape: "umlClass", label: "", className: clss.name}
+            @graph.setNode clss.name, {shape: "umlClass", label: "", className: clss.name}
 
         for clss in @classes
             for connection in clss.outConnections
-                g.setEdge(connection.source, connection.target, {arrowhead: connection.getType()})
+                @graph.setEdge(connection.source, connection.target, {arrowhead: connection.getType()})
 
         svg = @svg
         inner = svg.select(".zoomer")
@@ -129,7 +130,7 @@ class App.UMLEditor
             render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead()
 
         # Run the renderer. This is what draws the final graph.
-        render(inner, g)
+        render(inner, @graph)
 
         bbox = svg.node().getBBox()
         width = bbox.width
@@ -138,6 +139,12 @@ class App.UMLEditor
         # Center the graph
         initialScale = 1
         zoom
-            .translate([(width - g.graph().width * initialScale) / 2, 20])
+            .translate([(width - @graph.graph().width * initialScale) / 2, 20])
             .scale(initialScale)
             .event(svg)
+
+    serialize: () ->
+        return (clss.serialize() for clss in @classes)
+
+    toJSON: () ->
+        return JSON.stringify @serialize()

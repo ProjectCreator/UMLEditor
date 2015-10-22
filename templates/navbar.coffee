@@ -25,7 +25,7 @@ App.Templates.navbar =
                                 </li>
                                 <li>
                                     <a href="#">
-                                        <span class="label label-primary label-lg">
+                                        <span class="label label-primary label-lg save">
                                             Save &nbsp;
                                             <span class="glyphicon glyphicon-hdd"></span>
                                         </span>
@@ -36,10 +36,10 @@ App.Templates.navbar =
                                         Export as
                                         <span class="caret"></span>
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">JSON</a></li>
-                                        <li><a href="#">CSON</a></li>
-                                        <li><a href="#">XML</a></li>
+                                    <ul class="dropdown-menu export">
+                                        <li class="json"><a href="#">JSON</a></li>
+                                        <li class="cson"><a href="#">CSON</a></li>
+                                        <li class="xml"><a href="#">XML</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -99,5 +99,14 @@ App.Templates.navbar =
         @find(".label.newConnection").click () ->
             editor.showConnectionModal()
             return true
+
+        # SAVE BUTTON
+        @find(".label.save").click () ->
+            console.info "TODO: save diagram to server!"
+            return true
+
+        exportList = @find(".export")
+        exportList.find(".json").click () ->
+            console.log editor.toJSON()
 
         return @

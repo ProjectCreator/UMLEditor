@@ -4,8 +4,6 @@ class App.UMLClassEditView extends App.AbstractView
     constructor: (model) ->
         super(model)
 
-        self = @
-
         @div = App.Templates.get(
             "editUMLClass"
             {

@@ -86,3 +86,13 @@ class App.UMLClass
     exitEditMode: () ->
         @views.edit.hide()
         return true
+
+    serialize: () ->
+        return {
+            name: @name
+            attributes: @attributes
+            methods: @methods
+            isAbstract: @isAbstract
+            isInterface: @isInterface
+            outConnections: @outConnections
+        }

@@ -90,9 +90,9 @@
   });
 
   App.Templates.navbar = {
-    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export as\n                        <span class=\"caret\"></span>\n                    </a>\n                    <ul class=\"dropdown-menu\">\n                        <li><a href=\"#\">JSON</a></li>\n                        <li><a href=\"#\">CSON</a></li>\n                        <li><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
+    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export as\n                        <span class=\"caret\"></span>\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
     bindEvents: function(editor) {
-      var closeBtn, searchBar;
+      var closeBtn, exportList, searchBar;
       searchBar = this.find(".search");
       closeBtn = searchBar.siblings(".close");
       searchBar.keyup(function(evt) {
@@ -140,6 +140,14 @@
       this.find(".label.newConnection").click(function() {
         editor.showConnectionModal();
         return true;
+      });
+      this.find(".label.save").click(function() {
+        console.info("TODO: save diagram to server!");
+        return true;
+      });
+      exportList = this.find(".export");
+      exportList.find(".json").click(function() {
+        return console.log(editor.toJSON());
       });
       return this;
     }
@@ -434,6 +442,9 @@
     function UMLEditor() {
       var navbar, self;
       self = this;
+      this.graph = new dagreD3.graphlib.Graph({
+        multigraph: true
+      });
       this.svg = null;
       navbar = App.Templates.get("navbar", null, this);
       this.connectionModal = App.Templates.get("chooseConnection", null, this);
@@ -533,10 +544,12 @@
     };
 
     UMLEditor.prototype.draw = function() {
-      var bbox, clss, connection, connectionType, g, height, initialScale, inner, j, k, l, len, len1, len2, len3, m, ref, ref1, ref2, ref3, ref4, render, self, svg, width, zoom;
+      var bbox, clss, connection, connectionType, height, initialScale, inner, j, k, l, len, len1, len2, len3, m, ref, ref1, ref2, ref3, ref4, render, self, svg, width, zoom;
       self = this;
       this.resetSvg();
-      g = new dagreD3.graphlib.Graph().setGraph({});
+      this.graph = new dagreD3.graphlib.Graph({
+        multigraph: true
+      }).setGraph({});
       ref = this.classes;
       for (j = 0, len = ref.length; j < len; j++) {
         clss = ref[j];
@@ -544,7 +557,7 @@
           ref1.remove();
         }
         clss.views["class"].draw();
-        g.setNode(clss.name, {
+        this.graph.setNode(clss.name, {
           shape: "umlClass",
           label: "",
           className: clss.name
@@ -556,7 +569,7 @@
         ref3 = clss.outConnections;
         for (l = 0, len2 = ref3.length; l < len2; l++) {
           connection = ref3[l];
-          g.setEdge(connection.source, connection.target, {
+          this.graph.setEdge(connection.source, connection.target, {
             arrowhead: connection.getType()
           });
         }
@@ -605,12 +618,30 @@
         connectionType = ref4[m];
         render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead();
       }
-      render(inner, g);
+      render(inner, this.graph);
       bbox = svg.node().getBBox();
       width = bbox.width;
       height = bbox.height;
       initialScale = 1;
-      return zoom.translate([(width - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+      return zoom.translate([(width - this.graph.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+    };
+
+    UMLEditor.prototype.serialize = function() {
+      var clss;
+      return (function() {
+        var j, len, ref, results;
+        ref = this.classes;
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          clss = ref[j];
+          results.push(clss.serialize());
+        }
+        return results;
+      }).call(this);
+    };
+
+    UMLEditor.prototype.toJSON = function() {
+      return JSON.stringify(this.serialize());
     };
 
     return UMLEditor;
@@ -784,6 +815,17 @@
     UMLClass.prototype.exitEditMode = function() {
       this.views.edit.hide();
       return true;
+    };
+
+    UMLClass.prototype.serialize = function() {
+      return {
+        name: this.name,
+        attributes: this.attributes,
+        methods: this.methods,
+        isAbstract: this.isAbstract,
+        isInterface: this.isInterface,
+        outConnections: this.outConnections
+      };
     };
 
     return UMLClass;
@@ -1146,9 +1188,7 @@
     extend(UMLClassEditView, superClass);
 
     function UMLClassEditView(model) {
-      var self;
       UMLClassEditView.__super__.constructor.call(this, model);
-      self = this;
       this.div = App.Templates.get("editUMLClass", {
         className: this.model.name,
         isAbstract: this.model.isAbstract,
