@@ -46,7 +46,7 @@ $(document).ready () ->
         ]
         {
             # abstract: true
-            interface: true
+            isInterface: true
         }
     )
     # console.log uml
@@ -85,8 +85,8 @@ $(document).ready () ->
             }
         ]
         {
-            abstract: true
-            # interface: true
+            isAbstract: true
+            # isInterface: true
         }
     )
     # console.log uml2

@@ -146,5 +146,24 @@ class App.UMLEditor
     serialize: () ->
         return (clss.serialize() for clss in @classes)
 
+    deserialize: (data) ->
+        @classes = []
+        for classData in data
+            @classes.push new App.UMLClass(
+                @
+                classData.name
+                classData.attributes
+                classData.methods
+                {
+                    isAbstract: classData.isAbstract
+                    isInterface: classData.isInterface
+                    outConnections: classData.outConnections
+                }
+            )
+        return @
+
     toJSON: () ->
         return JSON.stringify @serialize()
+
+    fromJSON: (json) ->
+        return @deserialize JSON.parse(json)

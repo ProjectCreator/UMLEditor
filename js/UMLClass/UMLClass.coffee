@@ -15,9 +15,9 @@ class App.UMLClass
         @name = name
         @attributes = attributes
         @methods = methods
-        @isAbstract = options.abstract or false
-        @isInterface = options.interface or false
-        @outConnections = []
+        @isAbstract = options.isAbstract or false
+        @isInterface = options.isInterface or false
+        @outConnections = options.outConnections or []
 
         @views =
             class:  new App.UMLClassView(@)
@@ -28,6 +28,22 @@ class App.UMLClass
             value: ["class", "edit"]
         }
 
+    # STATIC METHODS
+    # @fromJSON: (editor, data) ->
+    #     return new @(
+    #         editor
+    #         data.name
+    #         data.attributes
+    #         data.methods
+    #         {
+    #             isAbstract: data.isAbstract
+    #             isInterface: data.isInterface
+    #             outConnections: data.outConnections
+    #         }
+    #     )
+
+
+    # INSTANCE METHODS
     checkConnection: (connection) ->
         # TODO: for generalization and realization -> prevent cycles!
         id = connection.getId()
@@ -96,3 +112,12 @@ class App.UMLClass
             isInterface: @isInterface
             outConnections: @outConnections
         }
+
+    deserialize: (data) ->
+        @name = data.name
+        @attributes = data.attributes
+        @methods = data.methods
+        @isAbstract = data.isAbstract
+        @isInterface = data.isInterface
+        @outConnections = data.outConnections
+        return @

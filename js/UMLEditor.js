@@ -90,9 +90,9 @@
   });
 
   App.Templates.navbar = {
-    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export as\n                        <span class=\"caret\"></span>\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
+    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu imort\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
     bindEvents: function(editor) {
-      var closeBtn, exportList, searchBar;
+      var closeBtn, exportList, importList, searchBar;
       searchBar = this.find(".search");
       closeBtn = searchBar.siblings(".close");
       searchBar.keyup(function(evt) {
@@ -148,6 +148,10 @@
       exportList = this.find(".export");
       exportList.find(".json").click(function() {
         return console.log(editor.toJSON());
+      });
+      importList = this.find(".import");
+      importList.find(".json").click(function() {
+        return console.log(editor.fromJSON());
       });
       return this;
     }
@@ -640,8 +644,26 @@
       }).call(this);
     };
 
+    UMLEditor.prototype.deserialize = function(data) {
+      var classData, j, len;
+      this.classes = [];
+      for (j = 0, len = data.length; j < len; j++) {
+        classData = data[j];
+        this.classes.push(new App.UMLClass(this, classData.name, classData.attributes, classData.methods, {
+          isAbstract: classData.isAbstract,
+          isInterface: classData.isInterface,
+          outConnections: classData.outConnections
+        }));
+      }
+      return this;
+    };
+
     UMLEditor.prototype.toJSON = function() {
       return JSON.stringify(this.serialize());
+    };
+
+    UMLEditor.prototype.fromJSON = function(json) {
+      return this.deserialize(JSON.parse(json));
     };
 
     return UMLEditor;
@@ -717,9 +739,9 @@
       this.name = name;
       this.attributes = attributes;
       this.methods = methods;
-      this.isAbstract = options.abstract || false;
-      this.isInterface = options["interface"] || false;
-      this.outConnections = [];
+      this.isAbstract = options.isAbstract || false;
+      this.isInterface = options.isInterface || false;
+      this.outConnections = options.outConnections || [];
       this.views = {
         "class": new App.UMLClassView(this),
         edit: new App.UMLClassEditView(this)
@@ -730,6 +752,14 @@
         value: ["class", "edit"]
       });
     }
+
+    UMLClass.fromJSON = function(editor, data) {
+      return new this(editor, data.name, data.attributes, data.methods, {
+        isAbstract: data.isAbstract,
+        isInterface: data.isInterface,
+        outConnections: data.outConnections
+      });
+    };
 
     UMLClass.prototype.checkConnection = function(connection) {
       var c, id, j, k, len, len1, ref, ref1, type;
@@ -826,6 +856,16 @@
         isInterface: this.isInterface,
         outConnections: this.outConnections
       };
+    };
+
+    UMLClass.prototype.deserialize = function(data) {
+      this.name = data.name;
+      this.attributes = data.attributes;
+      this.methods = data.methods;
+      this.isAbstract = data.isAbstract;
+      this.isInterface = data.isInterface;
+      this.outConnections = data.outConnections;
+      return this;
     };
 
     return UMLClass;

@@ -38,7 +38,7 @@
         visibility: "public"
       }
     ], {
-      "interface": true
+      isInterface: true
     });
     uml2 = new App.UMLClass(editor, "my 2nd class", [
       {
@@ -67,7 +67,7 @@
         ]
       }
     ], {
-      abstract: true
+      isAbstract: true
     });
     editor.addClass(uml);
     editor.addClass(uml2);

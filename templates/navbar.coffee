@@ -33,10 +33,23 @@ App.Templates.navbar =
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                                        Export as
-                                        <span class="caret"></span>
+                                        Export &nbsp;
+                                        <span class="glyphicon glyphicon-export"></span>
+                                        {{!<span class="caret"></span>}}
                                     </a>
                                     <ul class="dropdown-menu export">
+                                        <li class="json"><a href="#">JSON</a></li>
+                                        <li class="cson"><a href="#">CSON</a></li>
+                                        <li class="xml"><a href="#">XML</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                        Import &nbsp;
+                                        <span class="glyphicon glyphicon-import"></span>
+                                        {{!<span class="caret"></span>}}
+                                    </a>
+                                    <ul class="dropdown-menu imort">
                                         <li class="json"><a href="#">JSON</a></li>
                                         <li class="cson"><a href="#">CSON</a></li>
                                         <li class="xml"><a href="#">XML</a></li>
@@ -105,8 +118,15 @@ App.Templates.navbar =
             console.info "TODO: save diagram to server!"
             return true
 
+        # EXPORT
         exportList = @find(".export")
         exportList.find(".json").click () ->
             console.log editor.toJSON()
+
+        # IMPORT
+        importList = @find(".import")
+        importList.find(".json").click () ->
+            # TODO: upload or copy-pasted text
+            console.log editor.fromJSON()
 
         return @
