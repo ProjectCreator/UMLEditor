@@ -548,7 +548,7 @@
     };
 
     UMLEditor.prototype.draw = function() {
-      var bbox, clss, connection, connectionType, height, initialScale, inner, j, k, l, len, len1, len2, len3, m, ref, ref1, ref2, ref3, ref4, render, self, svg, width, zoom;
+      var bbox, clss, connection, connectionType, height, initialScale, inner, j, k, l, len, len1, len2, len3, m, ref, ref1, ref2, ref3, ref4, render, self, source, svg, target, type, width, zoom;
       self = this;
       this.resetSvg();
       this.graph = new dagreD3.graphlib.Graph({
@@ -573,9 +573,12 @@
         ref3 = clss.outConnections;
         for (l = 0, len2 = ref3.length; l < len2; l++) {
           connection = ref3[l];
-          this.graph.setEdge(connection.source, connection.target, {
-            arrowhead: connection.getType()
-          });
+          source = connection.source;
+          target = connection.target;
+          type = connection.getType();
+          this.graph.setEdge(source, target, {
+            arrowhead: type
+          }, type + "_from_" + source + "_to_" + target);
         }
       }
       svg = this.svg;
@@ -752,14 +755,6 @@
         value: ["class", "edit"]
       });
     }
-
-    UMLClass.fromJSON = function(editor, data) {
-      return new this(editor, data.name, data.attributes, data.methods, {
-        isAbstract: data.isAbstract,
-        isInterface: data.isInterface,
-        outConnections: data.outConnections
-      });
-    };
 
     UMLClass.prototype.checkConnection = function(connection) {
       var c, id, j, k, len, len1, ref, ref1, type;

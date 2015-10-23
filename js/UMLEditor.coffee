@@ -85,7 +85,10 @@ class App.UMLEditor
 
         for clss in @classes
             for connection in clss.outConnections
-                @graph.setEdge(connection.source, connection.target, {arrowhead: connection.getType()})
+                source = connection.source
+                target = connection.target
+                type = connection.getType()
+                @graph.setEdge(source, target, {arrowhead: type}, "#{type}_from_#{source}_to_#{target}")
 
         svg = @svg
         inner = svg.select(".zoomer")
@@ -126,6 +129,7 @@ class App.UMLEditor
                 return elem.node()
             return elem
 
+        # REGISTER ARROW HEADS
         for connectionType in Object.keys(App.Connections).without("UMLConnection")
             render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead()
 

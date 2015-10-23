@@ -49,7 +49,6 @@ $(document).ready () ->
             isInterface: true
         }
     )
-    # console.log uml
 
     uml2 = new App.UMLClass(
         editor
@@ -86,10 +85,8 @@ $(document).ready () ->
         ]
         {
             isAbstract: true
-            # isInterface: true
         }
     )
-    # console.log uml2
 
     editor.addClass uml
     editor.addClass uml2

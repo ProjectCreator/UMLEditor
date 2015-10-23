@@ -126,7 +126,7 @@ App.Templates.navbar =
         # IMPORT
         importList = @find(".import")
         importList.find(".json").click () ->
-            # TODO: upload or copy-pasted text
+            # TODO: upload OR copy-pasted text
             console.log editor.fromJSON()
 
         return @
