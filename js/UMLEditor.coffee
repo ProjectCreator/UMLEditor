@@ -8,6 +8,8 @@ class App.UMLEditor
         @svg = null
         navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
+        @importExportModal = App.Templates.get("importExportModal", null, @)
+
         @dataCollector = new App.UMLConnectionDataCollector(@)
 
         $(document.body)
@@ -59,6 +61,16 @@ class App.UMLEditor
         @connectionModal.modal("hide")
         return @
 
+    showImportExportModal: (value, format) ->
+        @importExportModal.data("value", value)
+        @importExportModal.data("format", format)
+        @importExportModal.modal("show")
+        return @
+
+    hideImportExportModal: () ->
+        @importExportModal.modal("hide")
+        return @
+
     showClassNamesOnly: () ->
         for clss in @classes
             clss.views.class.showOverlay()
@@ -87,7 +99,7 @@ class App.UMLEditor
             for connection in clss.outConnections
                 source = connection.source
                 target = connection.target
-                type = connection.getType()
+                type = connection.type
                 @graph.setEdge(source, target, {arrowhead: type}, "#{type}_from_#{source}_to_#{target}")
 
         svg = @svg
@@ -153,21 +165,23 @@ class App.UMLEditor
     deserialize: (data) ->
         @classes = []
         for classData in data
-            @classes.push new App.UMLClass(
-                @
-                classData.name
-                classData.attributes
-                classData.methods
-                {
-                    isAbstract: classData.isAbstract
-                    isInterface: classData.isInterface
-                    outConnections: classData.outConnections
-                }
-            )
+            # @classes.push new App.UMLClass(
+            #     @
+            #     classData.name
+            #     classData.attributes
+            #     classData.methods
+            #     {
+            #         isAbstract: classData.isAbstract
+            #         isInterface: classData.isInterface
+            #         outConnections: classData.outConnections
+            #     }
+            # )
+            @classes.push App.UMLClass.fromJSON(@, classData)
         return @
 
     toJSON: () ->
         return JSON.stringify @serialize()
 
     fromJSON: (json) ->
-        return @deserialize JSON.parse(json)
+        @deserialize JSON.parse(json)
+        return @

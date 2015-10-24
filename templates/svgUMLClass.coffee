@@ -35,7 +35,7 @@ App.Templates.svgUMLClass =
                     {{#overlay}}
                         <g class="overlayWrapper">
                             <rect class="overlay" width="{{width}}" height="{{height}}"></rect>
-                            <text class="text" y="79.5" x="102">{{className}}</text>
+                            <text class="text" y="79.5" x="102">{{className}} {{keywordsAndProperties}}</text>
                         </g>
                     {{/overlay}}
                 </g>"""

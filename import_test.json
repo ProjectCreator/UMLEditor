@@ -1,0 +1,82 @@
+[{
+    "name": "my class",
+    "attributes": [{
+        "name": "prop1",
+        "type": "String",
+        "visibility": "private",
+        "default": "hello world"
+    }, {
+        "name": "prop2",
+        "type": "String",
+        "visibility": "public"
+    }],
+    "methods": [{
+        "name": "method1",
+        "type": "Int",
+        "visibility": "public",
+        "parameters": []
+    }, {
+        "name": "method2",
+        "type": "String",
+        "visibility": "public",
+        "parameters": [{
+            "name": "a",
+            "type": "Integer",
+            "default": 12
+        }, {
+            "name": "b",
+            "type": "Boolean"
+        }]
+    }, {
+        "name": "method3",
+        "type": "String",
+        "visibility": "public",
+        "parameters": []
+    }],
+    "isAbstract": false,
+    "isInterface": true,
+    "outConnections": [{
+        "source": "my class",
+        "target": "my 2nd class",
+        "type": "Generalization",
+        "multiplicities": {
+            "source": {
+                "min": "Infinity",
+                "max": "Infinity"
+            },
+            "target": {
+                "min": "Infinity",
+                "max": "Infinity"
+            }
+        }
+    }]
+}, {
+    "name": "my 2nd class",
+    "attributes": [{
+        "name": "prop1",
+        "type": "String",
+        "visibility": "private",
+        "default": "-"
+    }],
+    "methods": [{
+        "name": "method1",
+        "type": "Int",
+        "visibility": "public",
+        "parameters": []
+    }, {
+        "name": "method2",
+        "type": "String",
+        "visibility": "public",
+        "parameters": [{
+            "name": "a",
+            "type": "Integer",
+            "default": 12
+        }, {
+            "name": "b",
+            "type": "Boolean"
+        }]
+    }],
+    "isAbstract": true,
+    "isInterface": false,
+    "outConnections": []
+}]

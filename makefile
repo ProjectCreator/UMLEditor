@@ -6,6 +6,7 @@ COFFEE_FILES = $(DIR)/namespaces.coffee \
 			   ./templates/navbar.coffee ./templates/svg.coffee ./templates/chooseConnection.coffee \
 			   ./templates/selectClassesForConnection.coffee \
 			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/editUMLClass_formRow.coffee \
+			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/importExportModal.coffee \
 			   $(DIR)/Template.coffee \
 			   $(DIR)/UMLConnection/UMLConnectionDataCollector.coffee \
 			   $(DIR)/UMLEditor.coffee \

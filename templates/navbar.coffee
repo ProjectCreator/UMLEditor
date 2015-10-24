@@ -49,7 +49,7 @@ App.Templates.navbar =
                                         <span class="glyphicon glyphicon-import"></span>
                                         {{!<span class="caret"></span>}}
                                     </a>
-                                    <ul class="dropdown-menu imort">
+                                    <ul class="dropdown-menu import">
                                         <li class="json"><a href="#">JSON</a></li>
                                         <li class="cson"><a href="#">CSON</a></li>
                                         <li class="xml"><a href="#">XML</a></li>
@@ -121,12 +121,13 @@ App.Templates.navbar =
         # EXPORT
         exportList = @find(".export")
         exportList.find(".json").click () ->
-            console.log editor.toJSON()
+            editor.showImportExportModal editor.toJSON(), "json"
+            return true
 
         # IMPORT
         importList = @find(".import")
         importList.find(".json").click () ->
-            # TODO: upload OR copy-pasted text
-            console.log editor.fromJSON()
+            editor.showImportExportModal "", "json"
+            return true
 
         return @

@@ -29,18 +29,18 @@ class App.UMLClass
         }
 
     # STATIC METHODS
-    # @fromJSON: (editor, data) ->
-    #     return new @(
-    #         editor
-    #         data.name
-    #         data.attributes
-    #         data.methods
-    #         {
-    #             isAbstract: data.isAbstract
-    #             isInterface: data.isInterface
-    #             outConnections: data.outConnections
-    #         }
-    #     )
+    @fromJSON: (editor, data) ->
+        return new @(
+            editor
+            data.name
+            data.attributes
+            data.methods
+            {
+                isAbstract: data.isAbstract
+                isInterface: data.isInterface
+                outConnections: (App.Connections.UMLConnection.fromJSON(connection) for connection in data.outConnections)
+            }
+        )
 
 
     # INSTANCE METHODS
@@ -51,10 +51,10 @@ class App.UMLClass
             throw new Error("Connection of that type already exists for class '#{@name}'")
 
         # check other class'es outConnections for generalizations/realizations with 'this' as target
-        type = connection.getType()
+        type = connection.type
         if type is "generalization" or type is "realization"
             for c in @editor.getClass(connection.target).outConnections
-                type = c.getType()
+                type = c.type
                 if (type is "generalization" or type is "realization") and c.target is @name
                     throw new Error("Cyclic generalization or realization detected!")
 
@@ -110,7 +110,7 @@ class App.UMLClass
             methods: @methods
             isAbstract: @isAbstract
             isInterface: @isInterface
-            outConnections: @outConnections
+            outConnections: (connection.serialize() for connection in @outConnections)
         }
 
     deserialize: (data) ->

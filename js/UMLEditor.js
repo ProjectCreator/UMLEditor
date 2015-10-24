@@ -90,7 +90,7 @@
   });
 
   App.Templates.navbar = {
-    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu imort\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
+    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu import\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
     bindEvents: function(editor) {
       var closeBtn, exportList, importList, searchBar;
       searchBar = this.find(".search");
@@ -147,11 +147,13 @@
       });
       exportList = this.find(".export");
       exportList.find(".json").click(function() {
-        return console.log(editor.toJSON());
+        editor.showImportExportModal(editor.toJSON(), "json");
+        return true;
       });
       importList = this.find(".import");
       importList.find(".json").click(function() {
-        return console.log(editor.fromJSON());
+        editor.showImportExportModal("", "json");
+        return true;
       });
       return this;
     }
@@ -320,6 +322,97 @@
     }
   };
 
+  App.Templates.editUMLClass = {
+    template: "<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    <span>Edit \"<span class=\"className\">{{className}}</span>\"</span>\n                    <button type=\"button\" class=\"btn btn-danger deleteClass right hpadded\">Delete class</button>\n                    <button type=\"button\" class=\"btn btn-default renameClass right\">Rename class</button>\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"general\">\n                    <h4>General options</h4>\n                    <form class=\"form-horizontal form-group\">\n                        <div class=\"row\">\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"abstractCheckbox\"{{isAbstract}} />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is abstract?\" />\n                                </div>\n                            </div>\n                            <div class=\"col-xs-4 col-xs-push-2\">\n                                <div class=\"input-group\">\n                                    <span class=\"input-group-addon\">\n                                        <input type=\"checkbox\" class=\"interfaceCheckbox\"{{isInterface}} />\n                                    </span>\n                                    <input type=\"text\" class=\"form-control\" readonly value=\"is interface?\" />\n                                </div>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class=\"attributes\">\n                    <h4>Attributes</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add attribute</button>\n                        </div>\n                    </div>\n                </div>\n                <hr />\n                <div class=\"methods\">\n                    <h4>Methods</h4>\n                    <form class=\"form-horizontal\"></form>\n                    <div class=\"row\">\n                        <div class=\"col-xs-10 col-xs-push-2\">\n                            <button type=\"button\" class=\"btn btn-primary add\">Add method</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger cancel\" data-dismiss=\"modal\">Cancel</button>\n                <button type=\"button\" class=\"btn btn-default reset\">Reset</button>\n                <button type=\"button\" class=\"btn btn-primary btn-lg save\">Save changes</button>\n            </div>\n        </div>\n    </div>\n</div>",
+    bindEvents: function(view) {
+      var self;
+      self = this;
+      this.find("button.deleteClass").click(function() {
+        if (confirm("Are you really sure you want to delete the class '" + view.model.name + "' and all of its incoming and outgoing dependencies?")) {
+          view.hide();
+          self.on("hidden.bs.modal", function() {
+            view.model.editor.removeClass(view.model);
+            return true;
+          });
+        }
+        return true;
+      });
+      this.find("button.renameClass").click(function() {
+        var name;
+        if ((name = prompt("Enter the new name of the class!")) != null) {
+          view.model.name = name;
+          view.draw();
+        }
+        return true;
+      });
+      this.find("button.cancel").click(function() {
+        view.draw();
+        return true;
+      });
+      this.find("button.reset").click(function() {
+        view.draw();
+        return true;
+      });
+      this.find("button.save").click(function() {
+        var data;
+        data = view._getInput();
+        view.model.update(data.attributes, data.methods, data.generalOptions);
+        view.hide();
+        return true;
+      });
+      this.find(".attributes .add").click(function() {
+        self.find(".attributes form").append(view._createFormRow({
+          name: "new attribute",
+          type: "new type",
+          visibility: "public"
+        }, true));
+        return true;
+      });
+      this.find(".methods .add").click(function() {
+        self.find(".methods form").append(view._createFormRow({
+          name: "new method",
+          type: "new type",
+          visibility: "public"
+        }, false));
+        return true;
+      });
+      return this;
+    }
+  };
+
+  App.Templates.editUMLClassParamRow = {
+    template: "<div class=\"row padded parameter\">\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control name\" placeholder=\"parameter name\" value=\"{{name}}\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <input type=\"text\" class=\"form-control type\" placeholder=\"parameter type\" value=\"{{type}}\" />\n    </div>\n    <div class=\"col-xs-2\">\n        <input type=\"text\" class=\"form-control default\" placeholder=\"default\" value=\"{{default}}\" data-current-value=\"{{default}}\" />\n    </div>\n    <div class=\"col-xs-3\">\n        <div class=\"input-group\">\n            <span class=\"input-group-addon\">\n                <input type=\"checkbox\" class=\"nullCheckbox\" />\n            </span>\n            <input type=\"text\" class=\"form-control\" readonly value=\"NULL\" />\n        </div>\n    </div>\n    <div class=\"col-xs-1\">\n        <button type=\"button\" class=\"close parameter hidden\" title=\"Remove parameter\">\n            <span>&times;</span>\n        </button>\n    </div>\n</div>"
+  };
+
+  App.Templates.editUMLClassParamList = {
+    template: "<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <label class=\"control-label\">Parameters</label>\n    </div>\n</div>\n{{#parameters}}\n    {{{.}}}\n{{/parameters}}\n<div class=\"row\">\n    <div class=\"col-xs-12\">\n        <button type=\"button\" class=\"btn btn-primary btn-sm add parameter\">Add parameter</button>\n    </div>\n</div>"
+  };
+
+  App.Templates.importExportModal = {
+    template: "<div class=\"modal fade uml edit\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Import / Export\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <form>\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-4\">\n                            <div class=\"input-group\">\n                                <span class=\"input-group-addon\">\n                                    <input type=\"radio\" name=\"format\" value=\"json\" tabindex=\"50\" />\n                                </span>\n                                <input type=\"text\" class=\"form-control\" readonly value=\"JSON\" tabindex=\"-1\" />\n                            </div>\n                        </div>\n                        <div class=\"col-xs-4\">\n                            <div class=\"input-group\">\n                                <span class=\"input-group-addon\">\n                                    <input type=\"radio\" name=\"format\" value=\"cson\" tabindex=\"51\" />\n                                </span>\n                                <input type=\"text\" class=\"form-control\" readonly value=\"CSON\" tabindex=\"-1\" />\n                            </div>\n                        </div>\n                        <div class=\"col-xs-4\">\n                            <div class=\"input-group\">\n                                <span class=\"input-group-addon\">\n                                    <input type=\"radio\" name=\"format\" value=\"xml\" tabindex=\"52\" />\n                                </span>\n                                <input type=\"text\" class=\"form-control\" readonly value=\"XML\" tabindex=\"-1\" />\n                            </div>\n                        </div>\n                    </div>\n                    <textarea class=\"form-control\" style=\"resize: vertical; height: 375px;\"></textarea>\n                </form>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                <button type=\"button\" class=\"btn btn-primary import\">Import</button>\n            </div>\n        </div>\n    </div>\n</div>",
+    bindEvents: function(editor) {
+      var radioBtns, self, textarea;
+      self = this;
+      radioBtns = this.find("[name='format']");
+      textarea = this.find("textarea");
+      this.on("show.bs.modal", function() {
+        radioBtns.filter("[value='" + (self.data("format")) + "']").prop("checked", true);
+        textarea.val(self.data("value"));
+        return true;
+      });
+      this.on("hidden.bs.modal", function() {
+        textarea.val("");
+        return true;
+      });
+      this.find(".btn.import").click(function() {
+        editor.fromJSON(textarea.val()).draw();
+        self.modal("hide");
+        return true;
+      });
+      return this;
+    }
+  };
+
   App.Templates.get = function() {
     var $elem, args, data, name, ref, template;
     name = arguments[0], data = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
@@ -452,6 +545,7 @@
       this.svg = null;
       navbar = App.Templates.get("navbar", null, this);
       this.connectionModal = App.Templates.get("chooseConnection", null, this);
+      this.importExportModal = App.Templates.get("importExportModal", null, this);
       this.dataCollector = new App.UMLConnectionDataCollector(this);
       $(document.body).append(navbar).append(this.connectionModal).append(this.chooseStatus);
       this.classes = [];
@@ -527,6 +621,18 @@
       return this;
     };
 
+    UMLEditor.prototype.showImportExportModal = function(value, format) {
+      this.importExportModal.data("value", value);
+      this.importExportModal.data("format", format);
+      this.importExportModal.modal("show");
+      return this;
+    };
+
+    UMLEditor.prototype.hideImportExportModal = function() {
+      this.importExportModal.modal("hide");
+      return this;
+    };
+
     UMLEditor.prototype.showClassNamesOnly = function() {
       var clss, j, len, ref;
       ref = this.classes;
@@ -575,7 +681,7 @@
           connection = ref3[l];
           source = connection.source;
           target = connection.target;
-          type = connection.getType();
+          type = connection.type;
           this.graph.setEdge(source, target, {
             arrowhead: type
           }, type + "_from_" + source + "_to_" + target);
@@ -652,11 +758,7 @@
       this.classes = [];
       for (j = 0, len = data.length; j < len; j++) {
         classData = data[j];
-        this.classes.push(new App.UMLClass(this, classData.name, classData.attributes, classData.methods, {
-          isAbstract: classData.isAbstract,
-          isInterface: classData.isInterface,
-          outConnections: classData.outConnections
-        }));
+        this.classes.push(App.UMLClass.fromJSON(this, classData));
       }
       return this;
     };
@@ -666,7 +768,8 @@
     };
 
     UMLEditor.prototype.fromJSON = function(json) {
-      return this.deserialize(JSON.parse(json));
+      this.deserialize(JSON.parse(json));
+      return this;
     };
 
     return UMLEditor;
@@ -756,6 +859,24 @@
       });
     }
 
+    UMLClass.fromJSON = function(editor, data) {
+      var connection;
+      return new this(editor, data.name, data.attributes, data.methods, {
+        isAbstract: data.isAbstract,
+        isInterface: data.isInterface,
+        outConnections: (function() {
+          var j, len, ref, results;
+          ref = data.outConnections;
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            connection = ref[j];
+            results.push(App.Connections.UMLConnection.fromJSON(connection));
+          }
+          return results;
+        })()
+      });
+    };
+
     UMLClass.prototype.checkConnection = function(connection) {
       var c, id, j, k, len, len1, ref, ref1, type;
       id = connection.getId();
@@ -766,12 +887,12 @@
           throw new Error("Connection of that type already exists for class '" + this.name + "'");
         }
       }
-      type = connection.getType();
+      type = connection.type;
       if (type === "generalization" || type === "realization") {
         ref1 = this.editor.getClass(connection.target).outConnections;
         for (k = 0, len1 = ref1.length; k < len1; k++) {
           c = ref1[k];
-          type = c.getType();
+          type = c.type;
           if ((type === "generalization" || type === "realization") && c.target === this.name) {
             throw new Error("Cyclic generalization or realization detected!");
           }
@@ -843,13 +964,23 @@
     };
 
     UMLClass.prototype.serialize = function() {
+      var connection;
       return {
         name: this.name,
         attributes: this.attributes,
         methods: this.methods,
         isAbstract: this.isAbstract,
         isInterface: this.isInterface,
-        outConnections: this.outConnections
+        outConnections: (function() {
+          var j, len, ref, results;
+          ref = this.outConnections;
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            connection = ref[j];
+            results.push(connection.serialize());
+          }
+          return results;
+        }).call(this)
       };
     };
 
@@ -1394,6 +1525,10 @@
       this.max = max;
     }
 
+    UMLMultiplicity.fromJSON = function(data) {
+      return new this(parseFloat(data.min), parseFloat(data.max));
+    };
+
     UMLMultiplicity.prototype.valToStr = function(val) {
       if (val === Infinity) {
         return "*";
@@ -1408,6 +1543,13 @@
       return "" + (this.valToStr(this.min));
     };
 
+    UMLMultiplicity.prototype.serialize = function() {
+      return {
+        min: "" + this.min,
+        max: "" + this.max
+      };
+    };
+
     return UMLMultiplicity;
 
   })();
@@ -1416,22 +1558,35 @@
     function UMLConnection(source, target, sourceMultiplicity, targetMultiplicity) {
       this.source = source;
       this.target = target;
+      this.type = this.constructor.name;
       this.multiplicities = {
         source: sourceMultiplicity || new App.UMLMultiplicity(),
         target: targetMultiplicity || new App.UMLMultiplicity()
       };
     }
 
-    UMLConnection.prototype.getId = function() {
-      return this.constructor.name + "-" + this.source + "-" + this.target;
-    };
-
-    UMLConnection.prototype.getType = function() {
-      return this.constructor.name;
+    UMLConnection.fromJSON = function(data) {
+      return new App.Connections[data.type](data.source, data.target, App.UMLMultiplicity.fromJSON(data.multiplicities.source), App.UMLMultiplicity.fromJSON(data.multiplicities.target));
     };
 
     UMLConnection.getArrowhead = function() {
       throw new Error("Implment me!");
+    };
+
+    UMLConnection.prototype.getId = function() {
+      return this.type + "-" + this.source + "-" + this.target;
+    };
+
+    UMLConnection.prototype.serialize = function() {
+      return {
+        source: this.source,
+        target: this.target,
+        type: this.type,
+        multiplicities: {
+          source: this.multiplicities.source.serialize(),
+          target: this.multiplicities.target.serialize()
+        }
+      };
     };
 
     return UMLConnection;
