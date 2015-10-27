@@ -7,8 +7,11 @@ COFFEE_FILES = $(DIR)/namespaces.coffee \
 			   ./templates/selectClassesForConnection.coffee \
 			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/editUMLClass_formRow.coffee \
 			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/importExportModal.coffee \
+			   ./templates/commandPalette.coffee \
+			   $(DIR)/Algorithms.coffee \
 			   $(DIR)/Template.coffee \
 			   $(DIR)/UMLConnection/UMLConnectionDataCollector.coffee \
+			   $(DIR)/CommandPalette.coffee \
 			   $(DIR)/UMLEditor.coffee \
 			   $(DIR)/AbstractView.coffee \
 			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
@@ -19,7 +22,9 @@ COFFEE_FILES = $(DIR)/namespaces.coffee \
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 
-CSS_FILES = css/general.sass css/uml.sass css/uml_edit.sass css/dagre_graph.sass css/templates/selectClassesForConnection.sass
+CSS_FILES = css/general.sass css/uml.sass css/uml_edit.sass css/dagre_graph.sass \
+			css/templates/selectClassesForConnection.sass \
+			css/templates/commandPalette.sass
 
 make:
 	# compile coffee

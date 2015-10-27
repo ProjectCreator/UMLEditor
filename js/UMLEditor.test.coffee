@@ -92,4 +92,6 @@ $(document).ready () ->
     editor.addClass uml2
 
     editor.draw()
+
+    window.editor = editor
     return true

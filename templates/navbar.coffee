@@ -70,6 +70,8 @@ App.Templates.navbar =
                     </div>
                 </nav>"""
     bindEvents: (editor) ->
+        commandPalette = editor.commandPalette
+
         # CLASS SEARCH
         searchBar = @find(".search")
         closeBtn = searchBar.siblings(".close")
@@ -100,18 +102,25 @@ App.Templates.navbar =
                 .val ""
                 .keyup()
             return true
+        commandPalette.registerCommand "search", "Search classes", () ->
+            searchBar.focus()
+            return true
 
         # NEW CLASS BUTTON
-        @find(".label.newClass").click () ->
+        createNewClass = () ->
             uml = new App.UMLClass(editor, "_#{Date.now()}", [], [])
             editor.addClass uml
             editor.draw()
             return true
+        @find(".label.newClass").click createNewClass
+        commandPalette.registerCommand "class.new", "New class", createNewClass
 
         # CONNECT BUTTON
-        @find(".label.newConnection").click () ->
+        createNewConnection = () ->
             editor.showConnectionModal()
             return true
+        @find(".label.newConnection").click createNewConnection
+        commandPalette.registerCommand "connection.new", "Connect classes", createNewConnection
 
         # SAVE BUTTON
         @find(".label.save").click () ->
@@ -119,15 +128,28 @@ App.Templates.navbar =
             return true
 
         # EXPORT
-        exportList = @find(".export")
-        exportList.find(".json").click () ->
+        exportJSON = () ->
             editor.showImportExportModal editor.toJSON(), "json"
             return true
+        exportList = @find(".export")
+        exportList.find(".json").click exportJSON
+        commandPalette.registerCommand "export.json", "Export as JSON", exportJSON
+
 
         # IMPORT
-        importList = @find(".import")
-        importList.find(".json").click () ->
+        importJSON = () ->
             editor.showImportExportModal "", "json"
             return true
+        importList = @find(".import")
+        importList.find(".json").click importJSON
+        commandPalette.registerCommand "import.json", "Import as JSON", importJSON
 
+        return @
+    bindKeys: (editor) ->
+        self = @
+        Mousetrap(document.body).bind "u+s", () ->
+            if editor.inKeyboardMode
+                self.find(".search").focus()
+                return false
+            return true
         return @

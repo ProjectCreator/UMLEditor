@@ -5,19 +5,34 @@ class App.UMLEditor
         self = @
 
         @graph = new dagreD3.graphlib.Graph({multigraph: true})
+        @dataCollector = new App.UMLConnectionDataCollector(@)
+        @commandPalette = new App.CommandPalette(@)
+
         @svg = null
-        navbar = App.Templates.get("navbar", null, @)
+        @navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
         @importExportModal = App.Templates.get("importExportModal", null, @)
+        # keyboardModeStatus = App.Templates.get("keyboardModeStatus")
 
-        @dataCollector = new App.UMLConnectionDataCollector(@)
 
         $(document.body)
-            .append navbar
+            .append @navbar
             .append @connectionModal
             .append @chooseStatus
+            # .append keyboardModeStatus
 
         @classes = []
+        # @inKeyboardMode = false
+
+        # Mousetrap(document.body).bind "mod+shift+u", () ->
+        #     self.inKeyboardMode = not self.inKeyboardMode
+        #     keyboardModeStatus.fadeToggle(100)
+        #     return false
+        Mousetrap(document.body).bind "mod+shift+p", () ->
+            # self.inKeyboardMode = not self.inKeyboardMode
+            # keyboardModeStatus.fadeToggle(100)
+            self.commandPalette.toggle()
+            return false
 
     resetSvg: () ->
         svg = App.Templates.get("svg")
@@ -111,6 +126,9 @@ class App.UMLEditor
             return true
         svg.call(zoom)
 
+        # bottom to top (mainly for generalizations)
+        @graph.graph().rankdir = "BT"
+
         # Create the renderer
         render = new dagreD3.render()
 
@@ -163,20 +181,7 @@ class App.UMLEditor
         return (clss.serialize() for clss in @classes)
 
     deserialize: (data) ->
-        @classes = []
-        for classData in data
-            # @classes.push new App.UMLClass(
-            #     @
-            #     classData.name
-            #     classData.attributes
-            #     classData.methods
-            #     {
-            #         isAbstract: classData.isAbstract
-            #         isInterface: classData.isInterface
-            #         outConnections: classData.outConnections
-            #     }
-            # )
-            @classes.push App.UMLClass.fromJSON(@, classData)
+        @classes = (App.UMLClass.fromJSON(@, classData) for classData in data)
         return @
 
     toJSON: () ->

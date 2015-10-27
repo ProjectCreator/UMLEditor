@@ -39,6 +39,7 @@ App.Templates.importExportModal =
                                         </div>
                                     </div>
                                     <textarea class="form-control" style="resize: vertical; height: 375px;"></textarea>
+                                    <input type="text" class="invisible" />
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -59,6 +60,10 @@ App.Templates.importExportModal =
             textarea.val(self.data("value"))
             return true
 
+        @on "shown.bs.modal", () ->
+            self.find(".invisible").focus()
+            return true
+
         @on "hidden.bs.modal", () ->
             textarea.val ""
             return true
@@ -70,5 +75,19 @@ App.Templates.importExportModal =
                 .draw()
             self.modal("hide")
             return true
+
+        return @
+    bindKeys: (editor) ->
+        self = @
+        elem = @get(0)
+        Mousetrap(elem)
+            .bind "esc", (evt, combo) ->
+                self.modal("hide")
+                return false
+            .bind "u+w", (evt, combo) ->
+                if editor.inKeyboardMode
+                    self.modal("hide")
+                    return false
+                return true
 
         return @

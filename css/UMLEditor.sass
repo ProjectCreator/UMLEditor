@@ -1,3 +1,7 @@
+.blurred
+    -webkit-filter: blur(2px)
+    filter: blur(2px)
+
 .hidden
     display: none
 
@@ -36,10 +40,20 @@
 .relative
     position: relative
 
+.invisible
+    height: 0
+    opacity: 0
+    visibility: visible
+    width: 0
+
 // BOOTSTRAP
 .label-lg
     font-size: 100%
     padding: .3em .6em .4em .6em
+
+.label-xlg
+    font-size: 150%
+    padding: .4em 1em .5em 1em
 
 .alert-sm
     font-size: 0.9em
@@ -185,3 +199,60 @@ $searchBackground: rgb(200, 200, 200)
         box-shadow: 0px 0px 10px 1px #a94442
         margin-bottom: 0px
         padding-right: 40px
+$bg: #3b3b3b
+$activeBg: #555555
+$width: 500px
+
+.commandPalette
+    background-color: $bg
+    display: none
+    left: calc(50% - #{$width / 2})
+    opacity: 0.97
+    position: fixed
+    // right: 5px
+    top: 57px
+    width: $width
+    z-index: 200
+
+    .glyphicon
+        top: 6px
+
+    .search
+        background-color: $bg
+        border: none
+        border-bottom: 1px solid white
+        border-radius: 0
+        color: white
+
+        &:focus
+            border-color: white
+            box-shadow: none
+
+    .results
+        font:
+            size: 15px
+            weight: normal
+        margin: 10px 0 0 0
+        text-align: left
+
+        .result
+            padding: 5px 0 5px 0
+
+            &.active, &:hover
+                background-color: $activeBg
+                font-weight: bold
+
+            // .name
+            .path
+                color: #cdcdcd
+                font-size: 11px
+
+.commandPalette.overlay
+    background-color: $activeBg
+    height: 100%
+    left: 0
+    opacity: 0.25
+    position: fixed
+    top: 0
+    width: 100%
+    z-index: 190

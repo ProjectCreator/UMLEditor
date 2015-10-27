@@ -1,24 +1,35 @@
-App.Templates.get = (name, data, args...) ->
-    if (template = App.Templates[name])?
-        if template.template?
-            $elem = $ Mustache.to_html(template.template, data)
-            template.bindEvents?.apply($elem, args)
-        else
-            $elem = $ Mustache.to_html(template, data)
-
-        return $elem
-    return null
-
-# get plain html string (=> no event binding)
-App.Templates.getHTML = (name, data, args...) ->
+getTemplate = (elementFromString, name, data, args...) ->
     if (template = App.Templates[name])?
         if template.template?
             elem = Mustache.to_html(template.template, data)
+            elem = elementFromString(elem)
+            template.bindEvents?.apply(elem, args)
+            template.bindKeys?.apply(elem, args)
         else
             elem = Mustache.to_html(template, data)
+            elem = elementFromString(elem)
 
         return elem
     return null
+
+App.Templates.get = (name, data, args...) ->
+    return getTemplate(
+        (html) ->
+            return $ html
+        name
+        data
+        args...
+    )
+
+# get plain html string (=> no event binding)
+App.Templates.getHTML = (name, data, args...) ->
+    return getTemplate(
+        (html) ->
+            return html
+        name
+        data
+        args...
+    )
 
 # get d3 object
 # NOTE: this only works for templates that 1 element on top level only!
