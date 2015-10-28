@@ -106,7 +106,8 @@
     cursor: pointer;
     display: none; }
     .uml .class .overlayWrapper .overlay {
-      fill: white; }
+      fill: white;
+      fill-opacity: 1; }
     .uml .class .overlayWrapper .text {
       font-size: 16px;
       font-weight: bold; }

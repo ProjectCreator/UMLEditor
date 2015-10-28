@@ -33,13 +33,15 @@ class App.CommandPalette
 
     find: (input, limit = 7) ->
         @currentResultIdx = -1
+
+        inputLower = input.toLowerCase()
         res = []
         levDist = App.Algorithms.levDist
         # search for path or name
         for path, obj of @commands
+            # get distances
             pathDist = levDist(input, path)
             nameDist = levDist(input, obj.name)
-
             if pathDist < nameDist
                 dist = pathDist
                 matchBy = "path"
@@ -50,18 +52,45 @@ class App.CommandPalette
                 dist = pathDist
                 matchBy = "both"
 
-            # NOTE: factor is threshold for 'not matching'
-            if dist < Math.min(path.length, obj.name.length) * 0.8
-                res.push {
-                    path: path
-                    name: obj.name
-                    callback: obj.callback
-                    dist: dist
-                    matchBy: matchBy
-                }
+            # direct hit is better than non-direct hit (but save distance for multiple direct hits)
+            # direct hit on path
+            if path.toLowerCase().indexOf(inputLower) >= 0
+                directHit = true
+                matchBy = "path"
+            # direct hit on name
+            else if obj.name.toLowerCase().indexOf(inputLower) >= 0
+                directHit = true
+                matchBy = "name"
+            # fuzzy
+            else
+                # add to results only if 'good enough'
+                # NOTE: factor is threshold for 'not matching'
+                if dist >= Math.min(path.length, obj.name.length) * 0.8
+                    continue
+                directHit = false
+
+            res.push {
+                path: path
+                name: obj.name
+                callback: obj.callback
+                dist: dist
+                matchBy: matchBy
+                directHit: directHit
+            }
 
 
         res.sort (a, b) ->
+            if a.directHit is true
+                if b.directHit is true
+                    # a direct, b direct => sort by distances
+                    return a.dist - b.dist
+                # a direct, b not direct => prefer a
+                return -1
+            # a not direct
+            # b direct => prefer b
+            if b.directHit is true
+                return 1
+            # a not direct, b not direct => sort by distances
             return a.dist - b.dist
 
         @resultSet = res

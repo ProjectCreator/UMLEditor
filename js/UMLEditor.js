@@ -750,11 +750,12 @@
     };
 
     CommandPalette.prototype.find = function(input, limit) {
-      var dist, levDist, matchBy, nameDist, obj, path, pathDist, ref, res;
+      var directHit, dist, inputLower, levDist, matchBy, nameDist, obj, path, pathDist, ref, res;
       if (limit == null) {
         limit = 7;
       }
       this.currentResultIdx = -1;
+      inputLower = input.toLowerCase();
       res = [];
       levDist = App.Algorithms.levDist;
       ref = this.commands;
@@ -772,17 +773,37 @@
           dist = pathDist;
           matchBy = "both";
         }
-        if (dist < Math.min(path.length, obj.name.length) * 0.8) {
-          res.push({
-            path: path,
-            name: obj.name,
-            callback: obj.callback,
-            dist: dist,
-            matchBy: matchBy
-          });
+        if (path.toLowerCase().indexOf(inputLower) >= 0) {
+          directHit = true;
+          matchBy = "path";
+        } else if (obj.name.toLowerCase().indexOf(inputLower) >= 0) {
+          directHit = true;
+          matchBy = "name";
+        } else {
+          if (dist >= Math.min(path.length, obj.name.length) * 0.8) {
+            continue;
+          }
+          directHit = false;
         }
+        res.push({
+          path: path,
+          name: obj.name,
+          callback: obj.callback,
+          dist: dist,
+          matchBy: matchBy,
+          directHit: directHit
+        });
       }
       res.sort(function(a, b) {
+        if (a.directHit === true) {
+          if (b.directHit === true) {
+            return a.dist - b.dist;
+          }
+          return -1;
+        }
+        if (b.directHit === true) {
+          return 1;
+        }
         return a.dist - b.dist;
       });
       this.resultSet = res;
