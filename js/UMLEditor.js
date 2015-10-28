@@ -1015,15 +1015,15 @@
 
     UMLEditor.prototype.draw = function() {
       var bbox, clss, connection, connectionType, height, initialScale, inner, k, l, len, len1, len2, len3, m, n, ref, ref1, ref2, render, self, source, svg, target, type, umlClasses, width, zoom;
-      self = this;
+      umlClasses = this.classes;
       this.resetSvg();
       this.graph = new dagreD3.graphlib.Graph({
         multigraph: true
       }).setGraph({});
-      umlClasses = this.classes;
       if (umlClasses.length === 0) {
         return this;
       }
+      self = this;
       for (k = 0, len = umlClasses.length; k < len; k++) {
         clss = umlClasses[k];
         if ((ref = clss.views["class"].element) != null) {
@@ -1044,9 +1044,11 @@
           source = connection.source;
           target = connection.target;
           type = connection.type;
-          this.graph.setEdge(source, target, {
-            arrowhead: type
-          }, type + "_from_" + source + "_to_" + target);
+          if (this.getClass(target) != null) {
+            this.graph.setEdge(source, target, {
+              arrowhead: type
+            }, type + "_from_" + source + "_to_" + target);
+          }
         }
       }
       svg = this.svg;
