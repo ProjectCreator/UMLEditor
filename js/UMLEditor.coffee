@@ -137,9 +137,7 @@ class App.UMLEditor
                 source = connection.source
                 target = connection.target
                 type = connection.type
-                # draw only those edges that go to classes that are drawn!
-                if @getClass(target)?
-                    @graph.setEdge(source, target, {arrowhead: type}, "#{type}_from_#{source}_to_#{target}")
+                @graph.setEdge(source, target, {arrowhead: type}, "#{type}_from_#{source}_to_#{target}")
 
         svg = @svg
         inner = svg.select(".zoomer")
