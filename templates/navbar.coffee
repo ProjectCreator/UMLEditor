@@ -33,6 +33,21 @@ App.Templates.navbar =
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                        View &nbsp;
+                                        <span class="glyphicon glyphicon-object-align-horizontal"></span>
+                                        {{!<span class="caret"></span>}}
+                                    </a>
+                                    <ul class="dropdown-menu view">
+                                        <li class="all"><a href="#">All</a></li>
+                                        <li class="model"><a href="#">Models</a></li>
+                                        <li class="view"><a href="#">Views</a></li>
+                                        <li class="controller"><a href="#">Controllers</a></li>
+                                        <li class="model_controller"><a href="#">Models &amp; Controllers</a></li>
+                                        <li class="controller_view"><a href="#">Controllers &amp; Views</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
                                         Export &nbsp;
                                         <span class="glyphicon glyphicon-export"></span>
                                         {{!<span class="caret"></span>}}
@@ -125,6 +140,19 @@ App.Templates.navbar =
         # SAVE BUTTON
         @find(".label.save").click () ->
             console.info "TODO: save diagram to server!"
+            return true
+
+        # VIEW
+        @find(".view li").each (idx, elem) ->
+            $elem = $(elem)
+            type = $elem.attr("class")
+            setView = () ->
+                editor
+                    .setView type
+                    .draw()
+                return true
+            $elem.click setView
+            commandPalette.registerCommand "view.#{type}", "Set view to '#{type}'", setView
             return true
 
         # EXPORT

@@ -7,32 +7,51 @@ class App.UMLEditor
         @graph = new dagreD3.graphlib.Graph({multigraph: true})
         @dataCollector = new App.UMLConnectionDataCollector(@)
         @commandPalette = new App.CommandPalette(@)
+        @view = "all"
 
         @svg = null
         @navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
         @importExportModal = App.Templates.get("importExportModal", null, @)
-        # keyboardModeStatus = App.Templates.get("keyboardModeStatus")
-
 
         $(document.body)
             .append @navbar
             .append @connectionModal
             .append @chooseStatus
-            # .append keyboardModeStatus
 
-        @classes = []
-        # @inKeyboardMode = false
+        @models = []
+        @views = []
+        @controllers = []
+        # @classes = []
+        Object.defineProperty @, "classes", {
+            get: () ->
+                return @_mapTypeToList(@view)
+            set: () ->
+                if DEBUG
+                    throw new Error("Cannot set UMLEditor.classes!")
+                return @
+        }
 
-        # Mousetrap(document.body).bind "mod+shift+u", () ->
-        #     self.inKeyboardMode = not self.inKeyboardMode
-        #     keyboardModeStatus.fadeToggle(100)
-        #     return false
         Mousetrap(document.body).bind "mod+shift+p", () ->
-            # self.inKeyboardMode = not self.inKeyboardMode
-            # keyboardModeStatus.fadeToggle(100)
             self.commandPalette.toggle()
             return false
+
+    _mapTypeToList: (type) ->
+        return {
+            all: @models.concat(@views).concat(@controllers)
+            model: @models
+            view: @views
+            controller: @controllers
+            model_controller: @models.concat(@controllers)
+            controller_view: @controllers.concat(@views)
+        }[type]
+
+    setView: (type) ->
+        if @_mapTypeToList(type)?
+            @view = type
+        else if DEBUG
+            throw new Error("UMLEditor::setView: Invalid type given!")
+        return @
 
     resetSvg: () ->
         svg = App.Templates.get("svg")
@@ -45,14 +64,14 @@ class App.UMLEditor
 
     addClass: (umlClass) ->
         if umlClass.name not in (clss.name for clss in @classes)
-            @classes.push umlClass
+            @_mapTypeToList(umlClass.type).push umlClass
         else
             throw new Error("Class with name '#{umlClass.name}' already exists!")
         return @
 
     removeClass: (umlClass) ->
         umlClass.delete()
-        @classes.remove umlClass
+        @_mapTypeToList(umlClass.type).remove umlClass
         return @
 
     addConnection: (connection) ->
@@ -97,20 +116,23 @@ class App.UMLEditor
         return @
 
     draw: () ->
-        self = @
-
+        umlClasses = @classes
         @resetSvg()
-
         # Create a new directed graph
         @graph = new dagreD3.graphlib.Graph({multigraph: true}).setGraph({})
 
-        for clss in @classes
+        if umlClasses.length is 0
+            return @
+
+        self = @
+
+        for clss in umlClasses
             # TODO: make draw return a ready template instead of redrawing and using that redrawn element
             clss.views.class.element?.remove()
             clss.views.class.draw()
             @graph.setNode clss.name, {shape: "umlClass", label: "", className: clss.name}
 
-        for clss in @classes
+        for clss in umlClasses
             for connection in clss.outConnections
                 source = connection.source
                 target = connection.target
@@ -133,8 +155,6 @@ class App.UMLEditor
         render = new dagreD3.render()
 
         render.shapes().umlClass = (parent, bbox, node) ->
-            # w = bbox.width
-            # h = bbox.height
             clss = self.getClass(node.className)
             elem = clss.views.class.element
             bbox = elem.node().getBBox()
@@ -176,6 +196,8 @@ class App.UMLEditor
             .translate([(width - @graph.graph().width * initialScale) / 2, 20])
             .scale(initialScale)
             .event(svg)
+
+        return @
 
     serialize: () ->
         return (clss.serialize() for clss in @classes)

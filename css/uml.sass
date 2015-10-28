@@ -46,7 +46,17 @@ $searchBackground: rgb(200, 200, 200)
         width: 1000px
 
     .class
-        // cursor: move
+        &.model rect
+            fill: red
+            fill-opacity: 0.1
+
+        &.view rect
+            fill: green
+            fill-opacity: 0.1
+
+        &.controller
+            fill: blue
+            fill-opacity: 0.1
 
         .overlayWrapper
             cursor: pointer

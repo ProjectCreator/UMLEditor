@@ -1,5 +1,5 @@
 App.Templates.svgUMLClass =
-    template: """<g class="uml class" id="{{id}}" transform="translate(0, 0)">
+    template: """<g class="uml class {{classType}}" id="{{id}}" transform="translate(0, 0)">
                     {{#name}}
                         <g class="name part">
                             <rect class="rect" width="{{width}}" height="{{height}}"></rect>

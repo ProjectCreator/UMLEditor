@@ -266,6 +266,7 @@ class App.UMLClassView extends App.AbstractView
         height = lineHeight * 3
         totalHeight += height
 
+        @element.classed @model.type, true
 
         @element.selectAll(".part .rect")
             .attr "width", w

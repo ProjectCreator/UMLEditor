@@ -92,7 +92,7 @@
   });
 
   App.Templates.navbar = {
-    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu import\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
+    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        View &nbsp;\n                        <span class=\"glyphicon glyphicon-object-align-horizontal\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu view\">\n                        <li class=\"all\"><a href=\"#\">All</a></li>\n                        <li class=\"model\"><a href=\"#\">Models</a></li>\n                        <li class=\"view\"><a href=\"#\">Views</a></li>\n                        <li class=\"controller\"><a href=\"#\">Controllers</a></li>\n                        <li class=\"model_controller\"><a href=\"#\">Models &amp; Controllers</a></li>\n                        <li class=\"controller_view\"><a href=\"#\">Controllers &amp; Views</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu import\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
     bindEvents: function(editor) {
       var closeBtn, commandPalette, createNewClass, createNewConnection, exportJSON, exportList, importJSON, importList, searchBar;
       commandPalette = editor.commandPalette;
@@ -154,6 +154,18 @@
       commandPalette.registerCommand("connection.new", "Connect classes", createNewConnection);
       this.find(".label.save").click(function() {
         console.info("TODO: save diagram to server!");
+        return true;
+      });
+      this.find(".view li").each(function(idx, elem) {
+        var $elem, setView, type;
+        $elem = $(elem);
+        type = $elem.attr("class");
+        setView = function() {
+          editor.setView(type).draw();
+          return true;
+        };
+        $elem.click(setView);
+        commandPalette.registerCommand("view." + type, "Set view to '" + type + "'", setView);
         return true;
       });
       exportJSON = function() {
@@ -498,6 +510,13 @@
               commandPalette.currentResultIdx = parseInt($(this).attr("data-idx"), 10);
               commandPalette.execCurrent(true);
               return false;
+            });
+            results.find(".result").mouseenter(function() {
+              var $elem;
+              $elem = $(this);
+              $elem.addClass("active").siblings(".active").removeClass("active");
+              commandPalette.currentResultIdx = $elem.attr("data-idx");
+              return true;
             });
           } else {
             results.empty();
@@ -846,17 +865,51 @@
       });
       this.dataCollector = new App.UMLConnectionDataCollector(this);
       this.commandPalette = new App.CommandPalette(this);
+      this.view = "all";
       this.svg = null;
       this.navbar = App.Templates.get("navbar", null, this);
       this.connectionModal = App.Templates.get("chooseConnection", null, this);
       this.importExportModal = App.Templates.get("importExportModal", null, this);
       $(document.body).append(this.navbar).append(this.connectionModal).append(this.chooseStatus);
-      this.classes = [];
+      this.models = [];
+      this.views = [];
+      this.controllers = [];
+      Object.defineProperty(this, "classes", {
+        get: function() {
+          return this._mapTypeToList(this.view);
+        },
+        set: function() {
+          if (DEBUG) {
+            throw new Error("Cannot set UMLEditor.classes!");
+          }
+          return this;
+        }
+      });
       Mousetrap(document.body).bind("mod+shift+p", function() {
         self.commandPalette.toggle();
         return false;
       });
     }
+
+    UMLEditor.prototype._mapTypeToList = function(type) {
+      return {
+        all: this.models.concat(this.views).concat(this.controllers),
+        model: this.models,
+        view: this.views,
+        controller: this.controllers,
+        model_controller: this.models.concat(this.controllers),
+        controller_view: this.controllers.concat(this.views)
+      }[type];
+    };
+
+    UMLEditor.prototype.setView = function(type) {
+      if (this._mapTypeToList(type) != null) {
+        this.view = type;
+      } else if (DEBUG) {
+        throw new Error("UMLEditor::setView: Invalid type given!");
+      }
+      return this;
+    };
 
     UMLEditor.prototype.resetSvg = function() {
       var svg;
@@ -882,7 +935,7 @@
         }
         return results1;
       }).call(this), ref) < 0) {
-        this.classes.push(umlClass);
+        this._mapTypeToList(umlClass.type).push(umlClass);
       } else {
         throw new Error("Class with name '" + umlClass.name + "' already exists!");
       }
@@ -891,7 +944,7 @@
 
     UMLEditor.prototype.removeClass = function(umlClass) {
       umlClass["delete"]();
-      this.classes.remove(umlClass);
+      this._mapTypeToList(umlClass.type).remove(umlClass);
       return this;
     };
 
@@ -961,17 +1014,20 @@
     };
 
     UMLEditor.prototype.draw = function() {
-      var bbox, clss, connection, connectionType, height, initialScale, inner, k, l, len, len1, len2, len3, m, n, ref, ref1, ref2, ref3, ref4, render, self, source, svg, target, type, width, zoom;
+      var bbox, clss, connection, connectionType, height, initialScale, inner, k, l, len, len1, len2, len3, m, n, ref, ref1, ref2, render, self, source, svg, target, type, umlClasses, width, zoom;
       self = this;
       this.resetSvg();
       this.graph = new dagreD3.graphlib.Graph({
         multigraph: true
       }).setGraph({});
-      ref = this.classes;
-      for (k = 0, len = ref.length; k < len; k++) {
-        clss = ref[k];
-        if ((ref1 = clss.views["class"].element) != null) {
-          ref1.remove();
+      umlClasses = this.classes;
+      if (umlClasses.length === 0) {
+        return this;
+      }
+      for (k = 0, len = umlClasses.length; k < len; k++) {
+        clss = umlClasses[k];
+        if ((ref = clss.views["class"].element) != null) {
+          ref.remove();
         }
         clss.views["class"].draw();
         this.graph.setNode(clss.name, {
@@ -980,12 +1036,11 @@
           className: clss.name
         });
       }
-      ref2 = this.classes;
-      for (l = 0, len1 = ref2.length; l < len1; l++) {
-        clss = ref2[l];
-        ref3 = clss.outConnections;
-        for (m = 0, len2 = ref3.length; m < len2; m++) {
-          connection = ref3[m];
+      for (l = 0, len1 = umlClasses.length; l < len1; l++) {
+        clss = umlClasses[l];
+        ref1 = clss.outConnections;
+        for (m = 0, len2 = ref1.length; m < len2; m++) {
+          connection = ref1[m];
           source = connection.source;
           target = connection.target;
           type = connection.type;
@@ -1034,9 +1089,9 @@
         });
         return elem;
       };
-      ref4 = Object.keys(App.Connections).without("UMLConnection");
-      for (n = 0, len3 = ref4.length; n < len3; n++) {
-        connectionType = ref4[n];
+      ref2 = Object.keys(App.Connections).without("UMLConnection");
+      for (n = 0, len3 = ref2.length; n < len3; n++) {
+        connectionType = ref2[n];
         render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead();
       }
       render(inner, this.graph);
@@ -1044,7 +1099,8 @@
       width = bbox.width;
       height = bbox.height;
       initialScale = 1;
-      return zoom.translate([(width - this.graph.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+      zoom.translate([(width - this.graph.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+      return this;
     };
 
     UMLEditor.prototype.serialize = function() {
@@ -1135,9 +1191,6 @@
   App.UMLClass = (function() {
     function UMLClass(editor, name, attributes, methods, options) {
       var attribute, k, l, len, len1, method;
-      if (options == null) {
-        options = {};
-      }
       for (k = 0, len = attributes.length; k < len; k++) {
         attribute = attributes[k];
         if (!attribute.visibility) {
@@ -1155,6 +1208,7 @@
       }
       this.editor = editor;
       this.name = name;
+      this.type = null;
       this.attributes = attributes;
       this.methods = methods;
       this.isAbstract = options.isAbstract || false;
@@ -1596,6 +1650,7 @@
       isAbstract = this.model.isAbstract;
       height = lineHeight * 3;
       totalHeight += height;
+      this.element.classed(this.model.type, true);
       this.element.selectAll(".part .rect").attr("width", w);
       this.element.select(".name .rect").attr("height", height);
       if (isInterface) {
@@ -1824,6 +1879,51 @@
     return UMLClassEditView;
 
   })(App.AbstractView);
+
+  App.Model = (function(superClass) {
+    extend(Model, superClass);
+
+    function Model(editor, name, attributes, methods, options) {
+      if (options == null) {
+        options = {};
+      }
+      Model.__super__.constructor.call(this, editor, name, attributes, methods, options);
+      this.type = "model";
+    }
+
+    return Model;
+
+  })(App.UMLClass);
+
+  App.View = (function(superClass) {
+    extend(View, superClass);
+
+    function View(editor, name, attributes, methods, options) {
+      if (options == null) {
+        options = {};
+      }
+      View.__super__.constructor.call(this, editor, name, attributes, methods, options);
+      this.type = "view";
+    }
+
+    return View;
+
+  })(App.UMLClass);
+
+  App.Controller = (function(superClass) {
+    extend(Controller, superClass);
+
+    function Controller(editor, name, attributes, methods, options) {
+      if (options == null) {
+        options = {};
+      }
+      Controller.__super__.constructor.call(this, editor, name, attributes, methods, options);
+      this.type = "controller";
+    }
+
+    return Controller;
+
+  })(App.UMLClass);
 
   App.UMLMultiplicity = (function() {
     function UMLMultiplicity(min, max) {

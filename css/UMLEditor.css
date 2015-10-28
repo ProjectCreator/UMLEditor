@@ -93,6 +93,15 @@
   height: 800px; }
   .uml.edit .modal-dialog {
     width: 1000px; }
+  .uml .class.model rect {
+    fill: red;
+    fill-opacity: 0.1; }
+  .uml .class.view rect {
+    fill: green;
+    fill-opacity: 0.1; }
+  .uml .class.controller {
+    fill: blue;
+    fill-opacity: 0.1; }
   .uml .class .overlayWrapper {
     cursor: pointer;
     display: none; }
@@ -190,7 +199,7 @@
     text-align: left; }
     .commandPalette .results .result {
       padding: 5px 0 5px 0; }
-      .commandPalette .results .result.active, .commandPalette .results .result:hover {
+      .commandPalette .results .result.active {
         background-color: #555555;
         font-weight: bold; }
       .commandPalette .results .result .path {

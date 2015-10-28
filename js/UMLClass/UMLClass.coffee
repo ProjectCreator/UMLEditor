@@ -1,7 +1,7 @@
 class App.UMLClass
 
     # CONSTRUCTOR
-    constructor: (editor, name, attributes, methods, options = {}) ->
+    constructor: (editor, name, attributes, methods, options) ->
         # preprocess data
         for attribute in attributes when not attribute.visibility
             attribute.visibility = "public"
@@ -13,6 +13,7 @@ class App.UMLClass
 
         @editor = editor
         @name = name
+        @type = null
         @attributes = attributes
         @methods = methods
         @isAbstract = options.isAbstract or false

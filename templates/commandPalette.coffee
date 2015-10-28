@@ -46,9 +46,19 @@ App.Templates.commandPalette =
                                 commandPalette.currentResultIdx = parseInt($(@).attr("data-idx"), 10)
                                 commandPalette.execCurrent(true)
                                 return false
+                    # bind mouseenter: change index on hover; can't use CSS because hover and key up/down would interfere
+                    results.find(".result").mouseenter () ->
+                        $elem = $(@)
+                        $elem
+                            .addClass "active"
+                            .siblings(".active")
+                            .removeClass("active")
+                        commandPalette.currentResultIdx = $elem.attr("data-idx")
+                        return true
                 else
                     results.empty()
             return true
+
 
         # OVERLAY
         @filter(".overlay").click () ->

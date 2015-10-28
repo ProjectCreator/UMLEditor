@@ -4,7 +4,7 @@
     var editor, uml, uml2;
     editor = new App.UMLEditor();
     console.log(editor);
-    uml = new App.UMLClass(editor, "my class", [
+    uml = new App.Model(editor, "my class", [
       {
         name: "prop1",
         type: "String",
@@ -40,7 +40,7 @@
     ], {
       isInterface: true
     });
-    uml2 = new App.UMLClass(editor, "my 2nd class", [
+    uml2 = new App.View(editor, "my 2nd class", [
       {
         name: "prop1",
         type: "String",

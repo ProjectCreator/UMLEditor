@@ -15,6 +15,7 @@ COFFEE_FILES = $(DIR)/namespaces.coffee \
 			   $(DIR)/UMLEditor.coffee \
 			   $(DIR)/AbstractView.coffee \
 			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
+			   $(DIR)/UMLClass/Model.coffee $(DIR)/UMLClass/View.coffee $(DIR)/UMLClass/Controller.coffee \
 			   $(DIR)/UMLConnection/UMLMultiplicity.coffee \
 			   $(DIR)/UMLConnection/UMLConnection.coffee \
 			   $(DIR)/UMLConnection/ClassLevel/Generalization.coffee $(DIR)/UMLConnection/ClassLevel/Realization.coffee \

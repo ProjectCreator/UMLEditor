@@ -2,7 +2,7 @@ $(document).ready () ->
     editor = new App.UMLEditor()
     console.log editor
 
-    uml = new App.UMLClass(
+    uml = new App.Model(
         editor
         "my class"
         [
@@ -50,7 +50,7 @@ $(document).ready () ->
         }
     )
 
-    uml2 = new App.UMLClass(
+    uml2 = new App.View(
         editor
         "my 2nd class"
         [

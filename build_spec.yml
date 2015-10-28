@@ -1,0 +1,14 @@
+version: 0.1
+mine:
+    - css/UMLEditor.css
+    - js/UMLEditor.min.js
+    - test.html
+# external libs
+theirs:
+    - css/includes/bootstrap/bootstrap.min.css
+    - js/includes/jquery/jquery-2.1.4.min.js
+    - js/includes/d3/d3.min.js
+    - js/includes/dagre-d3/dagre-d3.js
+    - js/includes/mustachejs/mustache.min.js
+    - js/includes/mousetrap/mousetrap.min.js
+    - js/includes/bootstrap/bootstrap.min.js
