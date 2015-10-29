@@ -46,27 +46,16 @@ class App.UMLClass
 
     # INSTANCE METHODS
     checkConnection: (connection) ->
-        # TODO: for generalization and realization -> prevent cycles!
-        id = connection.getId()
-        for c in @outConnections when c.getId() is id
-            throw new Error("Connection of that type already exists for class '#{@name}'")
-
-        # check other class'es outConnections for generalizations/realizations with 'this' as target
-        type = connection.type
-        if type is "generalization" or type is "realization"
-            for c in @editor.getClass(connection.target).outConnections
-                type = c.type
-                if (type is "generalization" or type is "realization") and c.target is @name
-                    throw new Error("Cyclic generalization or realization detected!")
-
-        return @
+        return App.UMLConstraints.edge(@editor, @, connection)
 
     addConnection: (connection) ->
-        try
-            @checkConnection connection
+        checkResult = @checkConnection(connection)
+        if checkResult is true
             @outConnections.push connection
-        catch err
-            console.error err
+        else
+            @editor.showError """UML constraint for <strong>#{connection.type._capitalize()}</strong> not satisfied!
+                                <br /><br />
+                                <strong>Error:</strong> #{checkResult}"""
         return @
 
     drawAll: () ->

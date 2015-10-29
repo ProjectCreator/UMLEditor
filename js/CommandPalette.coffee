@@ -78,20 +78,12 @@ class App.CommandPalette
                 directHit: directHit
             }
 
-
         res.sort (a, b) ->
-            if a.directHit is true
-                if b.directHit is true
-                    # a direct, b direct => sort by distances
-                    return a.dist - b.dist
-                # a direct, b not direct => prefer a
-                return -1
-            # a not direct
-            # b direct => prefer b
-            if b.directHit is true
-                return 1
-            # a not direct, b not direct => sort by distances
-            return a.dist - b.dist
+            # can't decide by direct hit -> decide by distance
+            if a.directHit is b.directHit
+                return a.dist - b.dist
+            # decide by direct hit
+            return if a.directHit then -1 else 1
 
         @resultSet = res
 

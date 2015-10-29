@@ -5,7 +5,7 @@ class App.Connections.UMLConnection
         @source = source
         @target = target
         # @requires not IE
-        @type = @constructor.name
+        @type = @constructor.name.toLowerCase()
         @multiplicities =
             source: sourceMultiplicity or new App.UMLMultiplicity()
             target: targetMultiplicity or new App.UMLMultiplicity()

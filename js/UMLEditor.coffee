@@ -13,11 +13,13 @@ class App.UMLEditor
         @navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
         @importExportModal = App.Templates.get("importExportModal", null, @)
+        @constraintErrorModal = App.Templates.get("constraintErrorModal")
 
         $(document.body)
             .append @navbar
             .append @connectionModal
             .append @chooseStatus
+            .append @constraintErrorModal
 
         @models = []
         @views = []
@@ -51,6 +53,12 @@ class App.UMLEditor
             @view = type
         else if DEBUG
             throw new Error("UMLEditor::setView: Invalid type given!")
+        return @
+
+    showError: (error) ->
+        @constraintErrorModal
+            .data "error", error
+            .modal "show"
         return @
 
     resetSvg: () ->
@@ -183,7 +191,7 @@ class App.UMLEditor
 
         # REGISTER ARROW HEADS
         for connectionType in Object.keys(App.Connections).without("UMLConnection")
-            render.arrows()[connectionType] = App.Connections[connectionType].getArrowhead()
+            render.arrows()[connectionType.toLowerCase()] = App.Connections[connectionType].getArrowhead()
 
         # Run the renderer. This is what draws the final graph.
         render(inner, @graph)

@@ -1,31 +1,34 @@
 PROJECT_NAME = UMLEditor
 
 DIR = ./js
-COFFEE_FILES = $(DIR)/namespaces.coffee \
-			   $(DIR)/prototyping/String.coffee $(DIR)/prototyping/Array.coffee \
-			   ./templates/navbar.coffee ./templates/svg.coffee ./templates/chooseConnection.coffee \
-			   ./templates/selectClassesForConnection.coffee \
-			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/editUMLClass_formRow.coffee \
-			   ./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee ./templates/importExportModal.coffee \
-			   ./templates/commandPalette.coffee \
-			   $(DIR)/Algorithms.coffee \
-			   $(DIR)/Template.coffee \
-			   $(DIR)/UMLConnection/UMLConnectionDataCollector.coffee \
-			   $(DIR)/CommandPalette.coffee \
-			   $(DIR)/UMLEditor.coffee \
-			   $(DIR)/AbstractView.coffee \
-			   $(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
-			   $(DIR)/UMLClass/Model.coffee $(DIR)/UMLClass/View.coffee $(DIR)/UMLClass/Controller.coffee \
-			   $(DIR)/UMLConnection/UMLMultiplicity.coffee \
-			   $(DIR)/UMLConnection/UMLConnection.coffee \
-			   $(DIR)/UMLConnection/ClassLevel/Generalization.coffee $(DIR)/UMLConnection/ClassLevel/Realization.coffee \
-			   $(DIR)/UMLConnection/InstanceLevel/Aggregation.coffee $(DIR)/UMLConnection/InstanceLevel/Association.coffee $(DIR)/UMLConnection/InstanceLevel/Composition.coffee
+COFFEE_FILES =  $(DIR)/namespaces.coffee \
+				$(DIR)/prototyping/String.coffee $(DIR)/prototyping/Array.coffee \
+				./templates/navbar.coffee ./templates/svg.coffee ./templates/chooseConnection.coffee \
+				./templates/selectClassesForConnection.coffee \
+				./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee  ./templates/editUMLClass_formRow.coffee \
+				./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee  ./templates/importExportModal.coffee \
+				./templates/constraintErrorModal.coffee \
+				./templates/commandPalette.coffee \
+				$(DIR)/Algorithms.coffee \
+				$(DIR)/Template.coffee \
+				$(DIR)/UMLConnection/UMLConnectionDataCollector.coffee \
+				$(DIR)/CommandPalette.coffee \
+				$(DIR)/UMLConstraints.coffee \
+				$(DIR)/UMLEditor.coffee \
+				$(DIR)/AbstractView.coffee \
+				$(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
+				$(DIR)/UMLClass/Model.coffee $(DIR)/UMLClass/View.coffee $(DIR)/UMLClass/Controller.coffee \
+				$(DIR)/UMLConnection/UMLMultiplicity.coffee \
+				$(DIR)/UMLConnection/UMLConnection.coffee \
+				$(DIR)/UMLConnection/ClassLevel/Generalization.coffee $(DIR)/UMLConnection/ClassLevel/Realization.coffee \
+				$(DIR)/UMLConnection/InstanceLevel/Aggregation.coffee $(DIR)/UMLConnection/InstanceLevel/Association.coffee  $(DIR)/UMLConnection/InstanceLevel/Composition.coffee
 DEBUG_FILE = $(DIR)/debug.coffee
 TEST_FILES = $(DIR)/$(PROJECT_NAME).test.coffee
 
 CSS_FILES = css/general.sass css/uml.sass css/uml_edit.sass css/dagre_graph.sass \
 			css/templates/selectClassesForConnection.sass \
-			css/templates/commandPalette.sass
+			css/templates/commandPalette.sass \
+			css/templates/constraintErrorModal.sass
 
 make:
 	# compile coffee

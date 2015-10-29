@@ -86,7 +86,11 @@
 
 
 
+
 $searchBackground: rgb(200, 200, 200)
+$modelBg: rgb(255, 0, 0)
+$controllerBg: rgb(0, 0, 255)
+$viewBg: rgb(0, 128, 0)
 
 .svgWrapper
     height: calc(100% - 52px)
@@ -110,17 +114,29 @@ $searchBackground: rgb(200, 200, 200)
         width: 1000px
 
     .class
-        &.model rect
-            fill: red
-            fill-opacity: 0.1
+        &.model
+            rect
+                fill: $modelBg
+                fill-opacity: 0.1
 
-        &.view rect
-            fill: green
-            fill-opacity: 0.1
+            .overlay
+                fill: lighten($modelBg, 35%)
+
+        &.view
+            rect
+                fill: $viewBg
+                fill-opacity: 0.1
+
+            .overlay
+                fill: lighten($viewBg, 10%)
 
         &.controller
-            fill: blue
-            fill-opacity: 0.1
+            rect
+                fill: $controllerBg
+                fill-opacity: 0.1
+
+            .overlay
+                fill: lighten($controllerBg, 20%)
 
         .overlayWrapper
             cursor: pointer
@@ -128,8 +144,9 @@ $searchBackground: rgb(200, 200, 200)
 
 
             .overlay
-                fill: white
+                // fill: white
                 fill-opacity: 1
+
             .text
                 font-size: 16px
                 font-weight: bold
@@ -267,3 +284,21 @@ $width: 500px
     top: 0
     width: 100%
     z-index: 190
+$borderColor: rgb(235, 204, 209)
+$color: rgb(170, 68, 66)
+
+.modal.error
+    .modal-content
+        // NOTE: from bootstrap's alert-danger
+        color: $color
+        background-color: rgb(242, 222, 222)
+        border:
+            color: $borderColor
+            radius: 6px
+
+    .modal-header, .modal-footer
+        border-color: $borderColor
+
+    .close
+        color: $color
+        opacity: 0.9

@@ -96,17 +96,22 @@
   .uml .class.model rect {
     fill: red;
     fill-opacity: 0.1; }
+  .uml .class.model .overlay {
+    fill: #ffb3b3; }
   .uml .class.view rect {
     fill: green;
     fill-opacity: 0.1; }
-  .uml .class.controller {
+  .uml .class.view .overlay {
+    fill: #00b300; }
+  .uml .class.controller rect {
     fill: blue;
     fill-opacity: 0.1; }
+  .uml .class.controller .overlay {
+    fill: #6666ff; }
   .uml .class .overlayWrapper {
     cursor: pointer;
     display: none; }
     .uml .class .overlayWrapper .overlay {
-      fill: white;
       fill-opacity: 1; }
     .uml .class .overlayWrapper .text {
       font-size: 16px;
@@ -216,5 +221,16 @@
   top: 0;
   width: 100%;
   z-index: 190; }
+
+.modal.error .modal-content {
+  color: #aa4442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  border-radius: 6px; }
+.modal.error .modal-header, .modal.error .modal-footer {
+  border-color: #ebccd1; }
+.modal.error .close {
+  color: #aa4442;
+  opacity: 0.9; }
 
 /*# sourceMappingURL=UMLEditor.css.map */
