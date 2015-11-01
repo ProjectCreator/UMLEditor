@@ -1,4 +1,4 @@
-App.Templates.constraintErrorModal =
+App.Templates.errorModal =
     template: """<div class="modal fade error">
                     <div class="modal-dialog">
                         <div class="modal-content">

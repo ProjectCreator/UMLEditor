@@ -7,14 +7,16 @@ COFFEE_FILES =  $(DIR)/namespaces.coffee \
 				./templates/selectClassesForConnection.coffee \
 				./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee  ./templates/editUMLClass_formRow.coffee \
 				./templates/editUMLClass.coffee ./templates/editUMLClass_paramRow.coffee ./templates/editUMLClass_paramList.coffee  ./templates/importExportModal.coffee \
-				./templates/constraintErrorModal.coffee \
+				./templates/errorModal.coffee \
 				./templates/commandPalette.coffee \
+				./templates/projectSettingsModal.coffee \
 				$(DIR)/Algorithms.coffee \
 				$(DIR)/Template.coffee \
 				$(DIR)/UMLConnection/UMLConnectionDataCollector.coffee \
 				$(DIR)/CommandPalette.coffee \
 				$(DIR)/UMLConstraints.coffee \
 				$(DIR)/UMLEditor.coffee \
+				$(DIR)/ProjectSettings.coffee \
 				$(DIR)/AbstractView.coffee \
 				$(DIR)/UMLClass/UMLClass.coffee $(DIR)/UMLClass/UMLClassView.coffee $(DIR)/UMLClass/UMLClassEditView.coffee \
 				$(DIR)/UMLClass/Model.coffee $(DIR)/UMLClass/View.coffee $(DIR)/UMLClass/Controller.coffee \

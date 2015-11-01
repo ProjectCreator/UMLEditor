@@ -1,5 +1,5 @@
 $(document).ready () ->
-    editor = new App.UMLEditor()
+    editor = new App.ProjectEditor()
     console.log editor
 
     uml = new App.Model(

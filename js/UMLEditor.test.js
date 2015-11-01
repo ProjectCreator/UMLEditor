@@ -2,7 +2,7 @@
 (function() {
   $(document).ready(function() {
     var editor, uml, uml2, uml3;
-    editor = new App.UMLEditor();
+    editor = new App.ProjectEditor();
     console.log(editor);
     uml = new App.Model(editor, "my wife - my model", [
       {

@@ -1,4 +1,4 @@
-class App.UMLEditor
+class App.ProjectEditor
 
     # CONSTRUCTOR
     constructor: () ->
@@ -8,35 +8,64 @@ class App.UMLEditor
         @dataCollector = new App.UMLConnectionDataCollector(@)
         @commandPalette = new App.CommandPalette(@)
         @view = "all"
+        @projectSettings =
+            name: "asdf"
+            # one of the frameworks' values
+            targetFramework: "python.django"
+            databaseConfig:
+                domain: ""
+                name: ""
+                user: ""
+                password: ""
+            modelTableMapping: {}
 
         @svg = null
         @navbar = App.Templates.get("navbar", null, @)
         @connectionModal = App.Templates.get("chooseConnection", null, @)
         @importExportModal = App.Templates.get("importExportModal", null, @)
-        @constraintErrorModal = App.Templates.get("constraintErrorModal")
+        @errorModal = App.Templates.get("errorModal")
+        @settingsModal = App.Templates.get("projectSettingsModal", @_initializeSettings(), @)
 
         $(document.body)
             .append @navbar
             .append @connectionModal
             .append @chooseStatus
-            .append @constraintErrorModal
+            .append @errorModal
+            .append @settingsModal
 
         @models = []
         @views = []
         @controllers = []
-        # @classes = []
         Object.defineProperty @, "classes", {
             get: () ->
                 return @_mapTypeToList(@view)
             set: () ->
                 if DEBUG
-                    throw new Error("Cannot set UMLEditor.classes!")
+                    throw new Error("Cannot set ProjectEditor.classes!")
                 return @
         }
 
         Mousetrap(document.body).bind "mod+shift+p", () ->
             self.commandPalette.toggle()
             return false
+
+    # extend / modify settings in a way so that mustache can directly take it
+    _initializeSettings: () ->
+        settings = App.ProjectSettings
+
+        @projectSettings.frameworks = settings.frameworks
+        @projectSettings.frameworks.unshift {
+            name: "Select a framework"
+            value: ""
+            selected: ""
+        }
+        selectedData = @projectSettings.frameworks
+            .filter (data) =>
+                return data.value is @projectSettings.targetFramework
+            .first
+        selectedData.selected = "selected"
+
+        return @projectSettings
 
     _mapTypeToList: (type) ->
         return {
@@ -48,15 +77,19 @@ class App.UMLEditor
             controller_view: @controllers.concat(@views)
         }[type]
 
+    _tableFromModelName: (modelName) ->
+        return "#{modelName.replace(/\s+/g, "_")}s"
+
     setView: (type) ->
         if @_mapTypeToList(type)?
             @view = type
         else if DEBUG
-            throw new Error("UMLEditor::setView: Invalid type given!")
+            throw new Error("ProjectEditor::setView: Invalid type given!")
         return @
 
     showError: (error) ->
-        @constraintErrorModal
+        $(".modal:visible").modal("hide")
+        @errorModal
             .data "error", error
             .modal "show"
         return @
@@ -73,6 +106,7 @@ class App.UMLEditor
     addClass: (umlClass) ->
         if umlClass.name not in (clss.name for clss in @classes)
             @_mapTypeToList(umlClass.type).push umlClass
+            @projectSettings.modelTableMapping[umlClass.name] = @_tableFromModelName(umlClass.name)
         else
             throw new Error("Class with name '#{umlClass.name}' already exists!")
         return @
@@ -111,6 +145,14 @@ class App.UMLEditor
 
     hideImportExportModal: () ->
         @importExportModal.modal("hide")
+        return @
+
+    showSettingsModal: () ->
+        @settingsModal.modal("show")
+        return @
+
+    hideSettingsModal: () ->
+        @settingsModal.modal("hide")
         return @
 
     showClassNamesOnly: () ->

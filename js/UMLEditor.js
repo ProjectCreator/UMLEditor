@@ -92,10 +92,14 @@
   });
 
   App.Templates.navbar = {
-    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">UMLEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        View &nbsp;\n                        <span class=\"glyphicon glyphicon-object-align-horizontal\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu view\">\n                        <li class=\"all\"><a href=\"#\">All</a></li>\n                        <li class=\"model\"><a href=\"#\">Models</a></li>\n                        <li class=\"view\"><a href=\"#\">Views</a></li>\n                        <li class=\"controller\"><a href=\"#\">Controllers</a></li>\n                        <li class=\"model_controller\"><a href=\"#\">Models &amp; Controllers</a></li>\n                        <li class=\"controller_view\"><a href=\"#\">Controllers &amp; Views</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu import\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
+    template: "<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href=\"#\">ProjectEditor</a>\n        </div>\n\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n            <ul class=\"nav navbar-nav\">\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg projectSettings\">\n                            Project settings &nbsp;\n                            <span class=\"glyphicon glyphicon-wrench\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newClass\">\n                            New class &nbsp;\n                            <span class=\"glyphicon glyphicon-plus\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg newConnection\">\n                            Connect classes &nbsp;\n                            <span class=\"glyphicon glyphicon-link\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li>\n                    <a href=\"#\">\n                        <span class=\"label label-primary label-lg save\">\n                            Save &nbsp;\n                            <span class=\"glyphicon glyphicon-hdd\"></span>\n                        </span>\n                    </a>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        View &nbsp;\n                        <span class=\"glyphicon glyphicon-object-align-horizontal\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu view\">\n                        <li class=\"all\"><a href=\"#\">All</a></li>\n                        <li class=\"model\"><a href=\"#\">Models</a></li>\n                        <li class=\"view\"><a href=\"#\">Views</a></li>\n                        <li class=\"controller\"><a href=\"#\">Controllers</a></li>\n                        <li class=\"model_controller\"><a href=\"#\">Models &amp; Controllers</a></li>\n                        <li class=\"controller_view\"><a href=\"#\">Controllers &amp; Views</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Export &nbsp;\n                        <span class=\"glyphicon glyphicon-export\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu export\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n                <li class=\"dropdown\">\n                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\">\n                        Import &nbsp;\n                        <span class=\"glyphicon glyphicon-import\"></span>\n                        {{!<span class=\"caret\"></span>}}\n                    </a>\n                    <ul class=\"dropdown-menu import\">\n                        <li class=\"json\"><a href=\"#\">JSON</a></li>\n                        <li class=\"cson\"><a href=\"#\">CSON</a></li>\n                        <li class=\"xml\"><a href=\"#\">XML</a></li>\n                    </ul>\n                </li>\n            </ul>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <form class=\"navbar-form\" role=\"search\">\n                    <div class=\"form-group relative\">\n                        <input type=\"text\" class=\"form-control search\" placeholder=\"Search classes\">\n                        <button type=\"button\" class=\"close\" title=\"Clear search\">\n                            <span>&times;</span>\n                        </button>\n                    </div>\n                </form>\n            </ul>\n        </div>\n    </div>\n</nav>",
     bindEvents: function(editor) {
       var closeBtn, commandPalette, createNewClass, createNewConnection, exportJSON, exportList, importJSON, importList, searchBar;
       commandPalette = editor.commandPalette;
+      this.find(".projectSettings").click(function() {
+        editor.showSettingsModal();
+        return true;
+      });
       searchBar = this.find(".search");
       closeBtn = searchBar.siblings(".close");
       searchBar.keyup(function(evt) {
@@ -472,7 +476,7 @@
     }
   };
 
-  App.Templates.constraintErrorModal = {
+  App.Templates.errorModal = {
     template: "<div class=\"modal fade error\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Error\n                </h3>\n            </div>\n            <div class=\"modal-body\"></div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-danger\" data-dismiss=\"modal\">Close</button>\n            </div>\n        </div>\n    </div>\n</div>",
     bindEvents: function() {
       var content;
@@ -559,6 +563,92 @@
       }).bind("esc", function(evt, combo) {
         commandPalette.hide();
         return false;
+      });
+      return this;
+    }
+  };
+
+  App.Templates.projectSettingsModal = {
+    template: "<div class=\"modal fade projectSettings\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Project settings\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"row padded\">\n                    <div class=\"col-xs-10 col-xs-push-1 alert alert-danger\"></div>\n                </div>\n                <form class=\"form-horizontal form-group\">\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Name:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <input type=\"text\" class=\"form-control name\" value=\"{{name}}\" placeholder=\"Project name\" />\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Target framwork:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <select class=\"form-control targetFramework\">\n                                {{#frameworks}}\n                                    <option value=\"{{value}}\" {{selected}}>{{name}}</option>\n                                {{/frameworks}}\n                            </select>\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Database access configuration</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 databaseConfig\">\n                            {{#databaseConfig}}\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Domain:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"domain form-control\" type=\"text\" value=\"{{domain}}\" placeholder=\"localhost\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Name:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"db form-control\" type=\"text\" value=\"{{name}}\" placeholder=\"db\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        User:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"root form-control\" type=\"text\" value=\"{{user}}\" placeholder=\"root\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Password:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"password form-control\" type=\"password\" value=\"{{password}}\" placeholder=\"adf\" />\n                                    </div>\n                                </div>\n                            {{/databaseConfig}}\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Table names</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 modelTableMapping\"></div>\n                    </div>\n                </form>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                <button type=\"button\" class=\"btn btn-primary save\">Save</button>\n            </div>\n        </div>\n    </div>\n</div>",
+    bindEvents: function(editor) {
+      var dbNameInput, domainInput, errorOutput, framworkInput, modelTableMapping, nameInput, passwordInput, self, settings, template, userInput;
+      self = this;
+      errorOutput = this.find(".alert-danger");
+      nameInput = this.find(".name");
+      framworkInput = this.find(".targetFramework");
+      domainInput = this.find(".databaseConfig .domain");
+      dbNameInput = this.find(".databaseConfig .name");
+      userInput = this.find(".databaseConfig .user");
+      passwordInput = this.find(".databaseConfig .password");
+      modelTableMapping = this.find(".modelTableMapping");
+      settings = editor.projectSettings;
+      template = "{{#modelTableMapping}}\n    <div class=\"row padded\" data-model-name=\"{{model}}\">\n        <div class=\"col-xs-6\">\n            {{model}}\n        </div>\n        <div class=\"col-xs-6\">\n            <input class=\"form-control\" type=\"text\" value=\"{{table}}\" />\n        </div>\n    </div>\n{{/modelTableMapping}}";
+      this.on("show.bs.modal", function() {
+        var key, mapping, val;
+        errorOutput.fadeOut(0);
+        self.find(".has-error").removeClass("has-error");
+        mapping = (function() {
+          var ref, results1;
+          ref = settings.modelTableMapping;
+          results1 = [];
+          for (key in ref) {
+            val = ref[key];
+            results1.push({
+              model: key,
+              table: val
+            });
+          }
+          return results1;
+        })();
+        modelTableMapping.empty().append(Mustache.to_html(template, {
+          modelTableMapping: mapping
+        }));
+        return true;
+      });
+      this.on("hide.bs.modal", function() {
+        return self.find(".has-error").length === 0;
+      });
+      this.find("input").keyup(function() {
+        var elem, row;
+        elem = $(this);
+        row = elem.closest(".row");
+        if (row.hasClass("has-error") && elem.val().length > 0) {
+          row.removeClass("has-error");
+        }
+        return true;
+      });
+      this.find(".save").click(function() {
+        var name, valid;
+        valid = true;
+        name = nameInput.val();
+        if ((name != null) && name.length > 0) {
+          settings.name = name;
+        } else {
+          valid = false;
+          errorOutput.html("No project name entered!").slideDown();
+          nameInput.closest(".row").addClass("has-error");
+        }
+        settings.targetFramework = framworkInput.val();
+        settings.databaseConfig.domain = domainInput.val() || "";
+        settings.databaseConfig.name = dbNameInput.val() || "";
+        settings.databaseConfig.user = userInput.val() || "";
+        settings.databaseConfig.password = passwordInput.val() || "";
+        self.find("[data-model-name]").each(function(idx, elem) {
+          var $elem, model, table;
+          $elem = $(elem);
+          model = $elem.attr("data-model-name");
+          table = $elem.find("input").val();
+          if ((table != null) && table.length > 0) {
+            settings.modelTableMapping[model] = $elem.find("input").val();
+          } else {
+            valid = false;
+            errorOutput.html("No table name for class '" + model + "'!").slideDown();
+            $elem.addClass("has-error");
+            return false;
+          }
+          return true;
+        });
+        return valid;
       });
       return this;
     }
@@ -961,8 +1051,8 @@
     edge: edge
   };
 
-  App.UMLEditor = (function() {
-    function UMLEditor() {
+  App.ProjectEditor = (function() {
+    function ProjectEditor() {
       var self;
       self = this;
       this.graph = new dagreD3.graphlib.Graph({
@@ -971,12 +1061,24 @@
       this.dataCollector = new App.UMLConnectionDataCollector(this);
       this.commandPalette = new App.CommandPalette(this);
       this.view = "all";
+      this.projectSettings = {
+        name: "asdf",
+        targetFramework: "python.django",
+        databaseConfig: {
+          domain: "",
+          name: "",
+          user: "",
+          password: ""
+        },
+        modelTableMapping: {}
+      };
       this.svg = null;
       this.navbar = App.Templates.get("navbar", null, this);
       this.connectionModal = App.Templates.get("chooseConnection", null, this);
       this.importExportModal = App.Templates.get("importExportModal", null, this);
-      this.constraintErrorModal = App.Templates.get("constraintErrorModal");
-      $(document.body).append(this.navbar).append(this.connectionModal).append(this.chooseStatus).append(this.constraintErrorModal);
+      this.errorModal = App.Templates.get("errorModal");
+      this.settingsModal = App.Templates.get("projectSettingsModal", this._initializeSettings(), this);
+      $(document.body).append(this.navbar).append(this.connectionModal).append(this.chooseStatus).append(this.errorModal).append(this.settingsModal);
       this.models = [];
       this.views = [];
       this.controllers = [];
@@ -986,7 +1088,7 @@
         },
         set: function() {
           if (DEBUG) {
-            throw new Error("Cannot set UMLEditor.classes!");
+            throw new Error("Cannot set ProjectEditor.classes!");
           }
           return this;
         }
@@ -997,7 +1099,25 @@
       });
     }
 
-    UMLEditor.prototype._mapTypeToList = function(type) {
+    ProjectEditor.prototype._initializeSettings = function() {
+      var selectedData, settings;
+      settings = App.ProjectSettings;
+      this.projectSettings.frameworks = settings.frameworks;
+      this.projectSettings.frameworks.unshift({
+        name: "Select a framework",
+        value: "",
+        selected: ""
+      });
+      selectedData = this.projectSettings.frameworks.filter((function(_this) {
+        return function(data) {
+          return data.value === _this.projectSettings.targetFramework;
+        };
+      })(this)).first;
+      selectedData.selected = "selected";
+      return this.projectSettings;
+    };
+
+    ProjectEditor.prototype._mapTypeToList = function(type) {
       return {
         all: this.models.concat(this.views).concat(this.controllers),
         model: this.models,
@@ -1008,21 +1128,26 @@
       }[type];
     };
 
-    UMLEditor.prototype.setView = function(type) {
+    ProjectEditor.prototype._tableFromModelName = function(modelName) {
+      return (modelName.replace(/\s+/g, "_")) + "s";
+    };
+
+    ProjectEditor.prototype.setView = function(type) {
       if (this._mapTypeToList(type) != null) {
         this.view = type;
       } else if (DEBUG) {
-        throw new Error("UMLEditor::setView: Invalid type given!");
+        throw new Error("ProjectEditor::setView: Invalid type given!");
       }
       return this;
     };
 
-    UMLEditor.prototype.showError = function(error) {
-      this.constraintErrorModal.data("error", error).modal("show");
+    ProjectEditor.prototype.showError = function(error) {
+      $(".modal:visible").modal("hide");
+      this.errorModal.data("error", error).modal("show");
       return this;
     };
 
-    UMLEditor.prototype.resetSvg = function() {
+    ProjectEditor.prototype.resetSvg = function() {
       var svg;
       svg = App.Templates.get("svg");
       if (this.svg != null) {
@@ -1034,7 +1159,7 @@
       return this;
     };
 
-    UMLEditor.prototype.addClass = function(umlClass) {
+    ProjectEditor.prototype.addClass = function(umlClass) {
       var clss, ref;
       if (ref = umlClass.name, indexOf.call((function() {
         var k, len, ref1, results1;
@@ -1047,30 +1172,31 @@
         return results1;
       }).call(this), ref) < 0) {
         this._mapTypeToList(umlClass.type).push(umlClass);
+        this.projectSettings.modelTableMapping[umlClass.name] = this._tableFromModelName(umlClass.name);
       } else {
         throw new Error("Class with name '" + umlClass.name + "' already exists!");
       }
       return this;
     };
 
-    UMLEditor.prototype.removeClass = function(umlClass) {
+    ProjectEditor.prototype.removeClass = function(umlClass) {
       umlClass["delete"]();
       this._mapTypeToList(umlClass.type).remove(umlClass);
       return this;
     };
 
-    UMLEditor.prototype.addConnection = function(connection) {
+    ProjectEditor.prototype.addConnection = function(connection) {
       var sourceClass;
       sourceClass = this.getClass(connection.source);
       sourceClass.addConnection(connection);
       return this;
     };
 
-    UMLEditor.prototype.removeConnection = function() {
+    ProjectEditor.prototype.removeConnection = function() {
       return this;
     };
 
-    UMLEditor.prototype.getClass = function(name) {
+    ProjectEditor.prototype.getClass = function(name) {
       var clss, k, len, ref;
       ref = this.classes;
       for (k = 0, len = ref.length; k < len; k++) {
@@ -1082,29 +1208,39 @@
       return null;
     };
 
-    UMLEditor.prototype.showConnectionModal = function() {
+    ProjectEditor.prototype.showConnectionModal = function() {
       this.connectionModal.modal("show");
       return this;
     };
 
-    UMLEditor.prototype.hideConnectionModal = function() {
+    ProjectEditor.prototype.hideConnectionModal = function() {
       this.connectionModal.modal("hide");
       return this;
     };
 
-    UMLEditor.prototype.showImportExportModal = function(value, format) {
+    ProjectEditor.prototype.showImportExportModal = function(value, format) {
       this.importExportModal.data("value", value);
       this.importExportModal.data("format", format);
       this.importExportModal.modal("show");
       return this;
     };
 
-    UMLEditor.prototype.hideImportExportModal = function() {
+    ProjectEditor.prototype.hideImportExportModal = function() {
       this.importExportModal.modal("hide");
       return this;
     };
 
-    UMLEditor.prototype.showClassNamesOnly = function() {
+    ProjectEditor.prototype.showSettingsModal = function() {
+      this.settingsModal.modal("show");
+      return this;
+    };
+
+    ProjectEditor.prototype.hideSettingsModal = function() {
+      this.settingsModal.modal("hide");
+      return this;
+    };
+
+    ProjectEditor.prototype.showClassNamesOnly = function() {
       var clss, k, len, ref;
       ref = this.classes;
       for (k = 0, len = ref.length; k < len; k++) {
@@ -1114,7 +1250,7 @@
       return this;
     };
 
-    UMLEditor.prototype.showClassData = function() {
+    ProjectEditor.prototype.showClassData = function() {
       var clss, k, len, ref;
       ref = this.classes;
       for (k = 0, len = ref.length; k < len; k++) {
@@ -1124,7 +1260,7 @@
       return this;
     };
 
-    UMLEditor.prototype.draw = function() {
+    ProjectEditor.prototype.draw = function() {
       var bbox, clss, connection, connectionType, height, initialScale, inner, k, l, len, len1, len2, len3, m, n, ref, ref1, ref2, render, self, source, svg, target, type, umlClasses, width, zoom;
       umlClasses = this.classes;
       this.resetSvg();
@@ -1216,7 +1352,7 @@
       return this;
     };
 
-    UMLEditor.prototype.serialize = function() {
+    ProjectEditor.prototype.serialize = function() {
       var clss;
       return (function() {
         var k, len, ref, results1;
@@ -1230,7 +1366,7 @@
       }).call(this);
     };
 
-    UMLEditor.prototype.deserialize = function(data) {
+    ProjectEditor.prototype.deserialize = function(data) {
       var classData;
       this.classes = (function() {
         var k, len, results1;
@@ -1244,18 +1380,36 @@
       return this;
     };
 
-    UMLEditor.prototype.toJSON = function() {
+    ProjectEditor.prototype.toJSON = function() {
       return JSON.stringify(this.serialize());
     };
 
-    UMLEditor.prototype.fromJSON = function(json) {
+    ProjectEditor.prototype.fromJSON = function(json) {
       this.deserialize(JSON.parse(json));
       return this;
     };
 
-    return UMLEditor;
+    return ProjectEditor;
 
   })();
+
+  App.ProjectSettings = {
+    frameworks: [
+      {
+        name: "Django (Python)",
+        value: "python.django",
+        selected: ""
+      }, {
+        name: "Cake (PHP)",
+        value: "php.cake",
+        selected: ""
+      }, {
+        name: "Rails (Ruby)",
+        value: "ruby.rails",
+        selected: ""
+      }
+    ]
+  };
 
   App.AbstractView = (function() {
     function AbstractView(model) {

@@ -2,11 +2,19 @@ App.Templates.navbar =
     template: """<nav class="navbar navbar-default">
                     <div class="container-fluid">
                         <div class="navbar-header">
-                            <a class="navbar-brand" href="#">UMLEditor</a>
+                            <a class="navbar-brand" href="#">ProjectEditor</a>
                         </div>
 
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
+                                <li>
+                                    <a href="#">
+                                        <span class="label label-primary label-lg projectSettings">
+                                            Project settings &nbsp;
+                                            <span class="glyphicon glyphicon-wrench"></span>
+                                        </span>
+                                    </a>
+                                </li>
                                 <li>
                                     <a href="#">
                                         <span class="label label-primary label-lg newClass">
@@ -86,6 +94,11 @@ App.Templates.navbar =
                 </nav>"""
     bindEvents: (editor) ->
         commandPalette = editor.commandPalette
+
+        # PROJECT SETTINGS
+        @find(".projectSettings").click () ->
+            editor.showSettingsModal()
+            return true
 
         # CLASS SEARCH
         searchBar = @find(".search")
