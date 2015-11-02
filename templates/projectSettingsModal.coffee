@@ -42,6 +42,14 @@ App.Templates.projectSettingsModal =
                                             {{#databaseConfig}}
                                                 <div class="row padded">
                                                     <div class="col-xs-6">
+                                                        Adapter:
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <input class="domain form-control" type="text" value="{{adapter}}" placeholder="mysql" />
+                                                    </div>
+                                                </div>
+                                                <div class="row padded">
+                                                    <div class="col-xs-6">
                                                         Domain:
                                                     </div>
                                                     <div class="col-xs-6">
@@ -95,8 +103,9 @@ App.Templates.projectSettingsModal =
         errorOutput = @find(".alert-danger")
 
         nameInput = @find(".name")
-        framworkInput = @find(".targetFramework")
+        frameworkInput = @find(".targetFramework")
 
+        adapterInput = @find(".databaseConfig .adapter")
         domainInput = @find(".databaseConfig .domain")
         dbNameInput = @find(".databaseConfig .name")
         userInput = @find(".databaseConfig .user")
@@ -119,7 +128,7 @@ App.Templates.projectSettingsModal =
 
         @on "show.bs.modal", () ->
             errorOutput.fadeOut(0)
-            self.find(".has-error").removeClass("has-error")
+            # self.find(".has-error").removeClass("has-error")
 
             mapping = ({model: key, table: val} for key, val of settings.modelTableMapping)
             modelTableMapping
@@ -151,8 +160,9 @@ App.Templates.projectSettingsModal =
                     .slideDown()
                 nameInput.closest(".row").addClass("has-error")
 
-            settings.targetFramework = framworkInput.val()
+            settings.targetFramework = frameworkInput.val()
 
+            settings.databaseConfig.adapter = adapterInput.val() or ""
             settings.databaseConfig.domain = domainInput.val() or ""
             settings.databaseConfig.name = dbNameInput.val() or ""
             settings.databaseConfig.user = userInput.val() or ""
@@ -173,6 +183,9 @@ App.Templates.projectSettingsModal =
                     $elem.addClass("has-error")
                     return false
                 return true
+
+            if valid
+                self.modal("hide")
 
             return valid
 

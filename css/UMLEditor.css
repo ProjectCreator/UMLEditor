@@ -113,7 +113,7 @@
     display: none; }
     .uml .class .overlayWrapper .overlay {
       fill-opacity: 1; }
-    .uml .class .overlayWrapper .text {
+    .uml .class .overlayWrapper .text.name {
       font-size: 16px;
       font-weight: bold; }
     .uml .class .overlayWrapper:hover .overlay, .uml .class .overlayWrapper.selected .overlay {
@@ -168,7 +168,7 @@
 .selectClassesForConnection {
   left: 25%;
   display: none;
-  opacity: 0.9;
+  opacity: 0.95;
   position: fixed;
   top: 5px;
   right: 25%;

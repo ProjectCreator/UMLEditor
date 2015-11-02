@@ -13,6 +13,7 @@ class App.ProjectEditor
             # one of the frameworks' values
             targetFramework: "python.django"
             databaseConfig:
+                adapter: ""
                 domain: ""
                 name: ""
                 user: ""

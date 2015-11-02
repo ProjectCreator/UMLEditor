@@ -15,9 +15,6 @@ class App.UMLClassView extends App.AbstractView
         @element.remove()
         return null
 
-        # _calculateHeight: (name, attributes, methods) ->
-    #     return (attributes.length + methods.length) * 14 + 35
-
     _calculateWidth: (name, stringifiedAttributes = "", stringifiedMethods = "", clss = "text") ->
         style =
             position: "absolute"
@@ -53,10 +50,8 @@ class App.UMLClassView extends App.AbstractView
 
         return maxWidth + 10
 
-
-
     # adjust rectangle size after prop update
-    adjustSize: () ->
+    _adjustSize: () ->
         # TODO
         return @
 
@@ -149,8 +144,17 @@ class App.UMLClassView extends App.AbstractView
                         }
                         {
                             tag: "text"
-                            class: "text"
-                            y: "1em"
+                            class: "text name"
+                            # y: "1em"
+                        }
+                        {
+                            tag: "text"
+                            class: "text abstract"
+                            x: "2"
+                        }
+                        {
+                            tag: "text"
+                            class: "text interface"
                         }
                     ]
                 }
@@ -163,15 +167,6 @@ class App.UMLClassView extends App.AbstractView
     _bindEvents: () ->
         self = @
         element = @element
-
-        # TODO: make this css
-        # @element
-        #     .on "mouseenter", () ->
-        #         element.select(".edit").classed "hidden", false
-        #         return true
-        #     .on "mouseleave", () ->
-        #         element.select(".edit").classed "hidden", true
-        #         return true
 
         @element.select(".edit").on "click", () ->
             self.model.enterEditMode()
@@ -218,7 +213,6 @@ class App.UMLClassView extends App.AbstractView
             return "+ #{method}"
         return "+ #{method}()"
 
-
     _visibilityToString: (visibility) ->
         mapper =
             public: "+"
@@ -238,11 +232,13 @@ class App.UMLClassView extends App.AbstractView
             .style "display", "none"
         return @
 
+    # PUBLIC
+
     # @Override
     draw: (x, y) ->
         @element = @_createElements(@model.editor.svg)
 
-        # TODO: put the following lines into adjustSize() and call it here
+        # TODO: put the following lines into _adjustSize() and call it here
         stringifiedAttributes = (@_attributeToString(attribute) for attribute in @model.attributes)
         stringifiedMethods = (@_methodToString(method) for method in @model.methods)
 
@@ -334,17 +330,24 @@ class App.UMLClassView extends App.AbstractView
         @element.select(".overlay")
             .attr "width", w
             .attr "height", totalHeight
-        @element.select(".overlayWrapper .text")
+        @element.select(".overlayWrapper .text.name")
             .text name
             .attr "x", (w - @_calculateWidth(name)) / 2
             .attr "y", totalHeight / 2
+        if isAbstract
+            @element.select(".overlayWrapper .text.abstract")
+                .text "A"
+                .attr "y", totalHeight - 2
+        if isInterface
+            @element.select(".overlayWrapper .text.interface")
+                .text "I"
+                .attr "x", w - 6
+                .attr "y", totalHeight - 2
 
 
         @_bindEvents()
-
         return @
 
-    #
     # redraw: (properties) ->
     #     if not properties?
     #         translation = d3.transform(@element.attr("transform")).translate

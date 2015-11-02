@@ -569,13 +569,14 @@
   };
 
   App.Templates.projectSettingsModal = {
-    template: "<div class=\"modal fade projectSettings\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Project settings\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"row padded\">\n                    <div class=\"col-xs-10 col-xs-push-1 alert alert-danger\"></div>\n                </div>\n                <form class=\"form-horizontal form-group\">\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Name:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <input type=\"text\" class=\"form-control name\" value=\"{{name}}\" placeholder=\"Project name\" />\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Target framwork:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <select class=\"form-control targetFramework\">\n                                {{#frameworks}}\n                                    <option value=\"{{value}}\" {{selected}}>{{name}}</option>\n                                {{/frameworks}}\n                            </select>\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Database access configuration</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 databaseConfig\">\n                            {{#databaseConfig}}\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Domain:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"domain form-control\" type=\"text\" value=\"{{domain}}\" placeholder=\"localhost\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Name:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"db form-control\" type=\"text\" value=\"{{name}}\" placeholder=\"db\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        User:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"root form-control\" type=\"text\" value=\"{{user}}\" placeholder=\"root\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Password:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"password form-control\" type=\"password\" value=\"{{password}}\" placeholder=\"adf\" />\n                                    </div>\n                                </div>\n                            {{/databaseConfig}}\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Table names</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 modelTableMapping\"></div>\n                    </div>\n                </form>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                <button type=\"button\" class=\"btn btn-primary save\">Save</button>\n            </div>\n        </div>\n    </div>\n</div>",
+    template: "<div class=\"modal fade projectSettings\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n                    <span>&times;</span>\n                </button>\n                <h3 class=\"modal-title\">\n                    Project settings\n                </h3>\n            </div>\n            <div class=\"modal-body\">\n                <div class=\"row padded\">\n                    <div class=\"col-xs-10 col-xs-push-1 alert alert-danger\"></div>\n                </div>\n                <form class=\"form-horizontal form-group\">\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Name:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <input type=\"text\" class=\"form-control name\" value=\"{{name}}\" placeholder=\"Project name\" />\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            Target framwork:\n                        </div>\n                        <div class=\"col-xs-5 col-xs-push-1\">\n                            <select class=\"form-control targetFramework\">\n                                {{#frameworks}}\n                                    <option value=\"{{value}}\" {{selected}}>{{name}}</option>\n                                {{/frameworks}}\n                            </select>\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Database access configuration</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 databaseConfig\">\n                            {{#databaseConfig}}\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Adapter:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"domain form-control\" type=\"text\" value=\"{{adapter}}\" placeholder=\"mysql\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Domain:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"domain form-control\" type=\"text\" value=\"{{domain}}\" placeholder=\"localhost\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Name:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"db form-control\" type=\"text\" value=\"{{name}}\" placeholder=\"db\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        User:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"root form-control\" type=\"text\" value=\"{{user}}\" placeholder=\"root\" />\n                                    </div>\n                                </div>\n                                <div class=\"row padded\">\n                                    <div class=\"col-xs-6\">\n                                        Password:\n                                    </div>\n                                    <div class=\"col-xs-6\">\n                                        <input class=\"password form-control\" type=\"password\" value=\"{{password}}\" placeholder=\"adf\" />\n                                    </div>\n                                </div>\n                            {{/databaseConfig}}\n                        </div>\n                    </div>\n                    <div class=\"row padded\">\n                        <hr />\n                        <h4 class=\"col-xs-10 col-xs-push-1\">Table names</h4>\n                        <div class=\"col-xs-10 col-xs-push-1 modelTableMapping\"></div>\n                    </div>\n                </form>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                <button type=\"button\" class=\"btn btn-primary save\">Save</button>\n            </div>\n        </div>\n    </div>\n</div>",
     bindEvents: function(editor) {
-      var dbNameInput, domainInput, errorOutput, framworkInput, modelTableMapping, nameInput, passwordInput, self, settings, template, userInput;
+      var adapterInput, dbNameInput, domainInput, errorOutput, frameworkInput, modelTableMapping, nameInput, passwordInput, self, settings, template, userInput;
       self = this;
       errorOutput = this.find(".alert-danger");
       nameInput = this.find(".name");
-      framworkInput = this.find(".targetFramework");
+      frameworkInput = this.find(".targetFramework");
+      adapterInput = this.find(".databaseConfig .adapter");
       domainInput = this.find(".databaseConfig .domain");
       dbNameInput = this.find(".databaseConfig .name");
       userInput = this.find(".databaseConfig .user");
@@ -586,7 +587,6 @@
       this.on("show.bs.modal", function() {
         var key, mapping, val;
         errorOutput.fadeOut(0);
-        self.find(".has-error").removeClass("has-error");
         mapping = (function() {
           var ref, results1;
           ref = settings.modelTableMapping;
@@ -628,7 +628,8 @@
           errorOutput.html("No project name entered!").slideDown();
           nameInput.closest(".row").addClass("has-error");
         }
-        settings.targetFramework = framworkInput.val();
+        settings.targetFramework = frameworkInput.val();
+        settings.databaseConfig.adapter = adapterInput.val() || "";
         settings.databaseConfig.domain = domainInput.val() || "";
         settings.databaseConfig.name = dbNameInput.val() || "";
         settings.databaseConfig.user = userInput.val() || "";
@@ -648,6 +649,9 @@
           }
           return true;
         });
+        if (valid) {
+          self.modal("hide");
+        }
         return valid;
       });
       return this;
@@ -1065,6 +1069,7 @@
         name: "asdf",
         targetFramework: "python.django",
         databaseConfig: {
+          adapter: "",
           domain: "",
           name: "",
           user: "",
@@ -1678,7 +1683,7 @@
       return maxWidth + 10;
     };
 
-    UMLClassView.prototype.adjustSize = function() {
+    UMLClassView.prototype._adjustSize = function() {
       return this;
     };
 
@@ -1763,8 +1768,14 @@
                 "class": "overlay"
               }, {
                 tag: "text",
-                "class": "text",
-                y: "1em"
+                "class": "text name"
+              }, {
+                tag: "text",
+                "class": "text abstract",
+                x: "2"
+              }, {
+                tag: "text",
+                "class": "text interface"
               }
             ]
           }
@@ -1954,7 +1965,13 @@
         return 0;
       });
       this.element.select(".overlay").attr("width", w).attr("height", totalHeight);
-      this.element.select(".overlayWrapper .text").text(name).attr("x", (w - this._calculateWidth(name)) / 2).attr("y", totalHeight / 2);
+      this.element.select(".overlayWrapper .text.name").text(name).attr("x", (w - this._calculateWidth(name)) / 2).attr("y", totalHeight / 2);
+      if (isAbstract) {
+        this.element.select(".overlayWrapper .text.abstract").text("A").attr("y", totalHeight - 2);
+      }
+      if (isInterface) {
+        this.element.select(".overlayWrapper .text.interface").text("I").attr("x", w - 6).attr("y", totalHeight - 2);
+      }
       this._bindEvents();
       return this;
     };
