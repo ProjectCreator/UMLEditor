@@ -73,7 +73,7 @@ App.Templates.commandPalette =
                     commandPalette.prevResult()
                 else
                     commandPalette.nextResult()
-                # TODO: not working ->  keyup on search bar is called nontheless
+                # TODO: not working ->  keyup on search bar is called nonetheless
                 # evt.preventDefault()
                 return false
             .bind "enter", (evt, combo) ->
